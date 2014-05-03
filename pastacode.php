@@ -86,9 +86,10 @@ function sc_pastacode( $atts, $content = "" ) {
         //Wrap
         $output = array();
         $output[] = '<div class="code-embed-wrapper">';
-        $output[] = '<pre class="language-' . sanitize_html_class( $atts['lang'] ) . ' code-embed-pre' . $ln_class . '" ' . $highlight_val . '><code class="language-' . sanitize_html_class( $atts['lang'] ) . ' code-embed-code">'
-        . $source[ 'code' ] .
-        '</code></pre>';
+        
+        $output[] = '<pre class="brush: js; tab-size: 4">';
+        //$output[] = '<pre class="language-' . sanitize_html_class( $atts['lang'] ) . ' code-embed-pre' . $ln_class . '" ' . $highlight_val . '>'
+        $output[] = $source[ 'code' ] . '</pre>';
         $output[] = '<div class="code-embed-infos">';
         if( isset( $source[ 'url' ] ) )
             $output[] = '<a href="' . esc_url( $source[ 'url' ] ) . '" title="' . sprintf( esc_attr__( 'See %s', 'pastacode' ), $source[ 'name' ] ) . '" target="_blank" class="code-embed-name">' . esc_html( $source[ 'name' ] ) . '</a>';
@@ -98,6 +99,13 @@ function sc_pastacode( $atts, $content = "" ) {
             $output[] = '<span class="code-embed-name">' . $source[ 'name' ] . '</span>';
         $output[] = '</div>';
         $output[] = '</div>';
+
+        $output[] = '<script type="text/javascript" src="' . plugins_url( 'js/shCore.js', __FILE__ ) . '"></script>';
+        $output[] = '<script type="text/javascript" src="' . plugins_url( 'js/shBrushJScript.js', __FILE__ ) . '"></script>';
+        $output[] = '<link href="' . plugins_url( 'css/shCore.css', __FILE__ ) . '" rel="stylesheet" type="text/css" />';
+        $output[] = '<link href="' . plugins_url( 'css/shThemeDefault.css', __FILE__ ) . '" rel="stylesheet" type="text/css" />';
+        $output[] = '<script type="text/javascript">SyntaxHighlighter.all()</script>';
+
         $output = implode( "\n", $output );
 
         return $output;
