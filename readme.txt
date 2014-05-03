@@ -1,4 +1,4 @@
-=== Pastacode ===
+=== Pastacode + SyntaxHighlighter ===
 Contributors: willybahuaud, juliobox
 Tags: embed, code, version, github, bitbucket, gist, prismjs, code, color highlight, syntaxique coloration
 Requires at least: 3.1
@@ -10,12 +10,12 @@ Use Pastacode to add code into your posts with the awesome PrismJs coloration li
 
 == Description ==
 
-With Pastacode, you can easily add code into your posts with the awesome PrismJs coloration library.
+With Pastacode, you can easily add code into your posts with the awesome SyntaxHighlighter coloration library.
 You can insert source code into the post editor, from a file, or from webservices like GitHub, Gist, Pastebin or BitBucket. Webservices responses are cached in order to avoid too many HTTP requests.
 
 Don't worry about posts updates while upgrading codes!
 
-Pastacode allows to enhance your snippets using PrismJs plugins (highlightning lines, link functions...).
+Pastacode allows to enhance your snippets using SyntaxHighlighter plugins (highlightning lines, link functions...).
 
 6 different color schemes are included, and you can build yours.
 
