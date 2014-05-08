@@ -7,7 +7,9 @@
  * juliobox, willybahuaud
  */
 
-const PASTACODE_VERSION = '1.2.1.1';
+const PASTACODE_VERSION = '1.3.1.1';
+
+$initSH = false;
 
 add_action ( 'plugins_loaded', 'pastacode_load_languages' );
 
@@ -98,11 +100,7 @@ function sc_pastacode($atts, $content = "") {
 		$output [] = '</div>';
 		$output [] = '</div>';
 		
-		$output [] = '<script type="text/javascript" src="' . plugins_url ( 'js/shCore.js', __FILE__ ) . '"></script>';
-		$output [] = '<script type="text/javascript" src="' . plugins_url ( 'js/shBrushJScript.js', __FILE__ ) . '"></script>';
-		$output [] = '<link href="' . plugins_url ( 'css/shCore.css', __FILE__ ) . '" rel="stylesheet" type="text/css" />';
-		$output [] = '<link href="' . plugins_url ( 'css/shThemeDefault.css', __FILE__ ) . '" rel="stylesheet" type="text/css" />';
-		$output [] = '<script type="text/javascript">SyntaxHighlighter.all()</script>';
+		initSHL($output);
 		
 		$output = implode ( "\n", $output );
 		
@@ -110,6 +108,19 @@ function sc_pastacode($atts, $content = "") {
 	} elseif (! empty ( $atts ['message'] )) {
 		return '<span class="pastacode_message">' . esc_html ( $atts ['message'] ) . '</span>';
 	}
+}
+
+function initSHL(array &$output) {
+    global $initSH;
+    
+    if (! $initSH) {
+        $initSH = true;
+        $output [] = '<script type="text/javascript" src="' . plugins_url('js/shCore.js', __FILE__) . '"></script>';
+        $output [] = '<script type="text/javascript" src="' . plugins_url('js/shBrushJScript.js', __FILE__) . '"></script>';
+        $output [] = '<link href="' . plugins_url('css/shCore.css', __FILE__) . '" rel="stylesheet" type="text/css" />';
+        $output [] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__) . '" rel="stylesheet" type="text/css" />';
+        $output [] = '<script type="text/javascript">SyntaxHighlighter.all()</script>';
+    }
 }
 
 add_filter( 'pastacode_github', '_pastacode_github', 10, 2 );
@@ -319,7 +330,7 @@ function pastacode_settings_page() {
 ?>
 <div class="wrap">
     <?php screen_icon(); ?>
-<h2>Pastacode v<?php echo PASTACODE_VERSION; ?></h2>
+<h2>Pastacode-SyntaxHighlighter v<?php echo PASTACODE_VERSION; ?></h2>
 
 <?php 
     add_settings_section( 'pastacode_setting_section',
