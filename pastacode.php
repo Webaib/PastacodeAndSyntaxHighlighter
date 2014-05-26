@@ -1,10 +1,11 @@
 <?php
 
 /*
- * Plugin Name: Pastacode Plugin URI: http://wordpress.org/extend/plugins/pastacode/ Description:
- * Embed GitHub, Gist, Pastebin, Bitbucket or whatever remote files and even your own code by
- * copy/pasting. Version: 1.2.1 Author: Willy Bahuaud Author URI: http://wabeo.fr Contributors,
- * juliobox, willybahuaud
+ * Plugin Name: Pastacode & SH Plugin
+ * Plugin URI:   https://github.com/Webaib/PastacodeAndSyntaxHighlighter
+ * Description: Embed GitHub, Gist, Pastebin, Bitbucket or whatever remote files and even your own
+ * code by copy/pasting. Version: 1.3.1.1 Author: Willy Bahuaud Author URI: http://wabeo.fr 
+ * Contributors, juliobox, willybahuaud, jpavlov 
  */
 
 const PASTACODE_VERSION = '1.3.1.1';
@@ -116,10 +117,13 @@ function initSHL(array &$output) {
     if (! $initSH) {
         $initSH = true;
         $output [] = '<script type="text/javascript" src="' . plugins_url('js/shCore.js', __FILE__) . '"></script>';
-        $output [] = '<script type="text/javascript" src="' . plugins_url('js/shBrushJScript.js', __FILE__) . '"></script>';
+        $output [] = '<script type="text/javascript" src="' . plugins_url('js/shAutoloader.js', __FILE__) . '"></script>';
+        //$output [] = '<script type="text/javascript" src="' . plugins_url('js/shBrushJScript.js', __FILE__) . '"></script>';
         $output [] = '<link href="' . plugins_url('css/shCore.css', __FILE__) . '" rel="stylesheet" type="text/css" />';
         $output [] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__) . '" rel="stylesheet" type="text/css" />';
         $output [] = '<script type="text/javascript">SyntaxHighlighter.all()</script>';
+        $output [] = '<script type="text/javascript">SyntaxHighlighter.autoloader("js ' 
+                . plugins_url('js/shBrushJScript.js', __FILE__) . '")</script>';
     }
 }
 
@@ -249,9 +253,11 @@ function pastacode_plugin_row_meta( $plugin_meta, $plugin_file ) {
         $authors = array(
             array(  'name'=>'Willy Bahuaud', 'url'=>'http://wabeo.fr' ),
             array(  'name'=>'Julio Potier', 'url'=>'http://www.boiteaweb.fr' ),
+            array(  'name'=>'Juri Pavlov', 'url'=>'http://www.overscale.net')
         );
         foreach( $authors as $author )
-            $a[] = '<a href="' . $author['url'] . '" title="' . esc_attr__( 'Visit author homepage' ) . '">' . $author['name'] . '</a>';
+            $a[] = '<a href="' . $author['url'] . '" title="' 
+                . esc_attr__( 'Visit author homepage' ) . '">' . $author['name'] . '</a>';
         $a = sprintf( __( 'By %s' ), wp_sprintf( '%l', $a ) );
         $plugin_meta[] = $a;
         $plugin_meta[] = $last;
