@@ -3,25 +3,42 @@
 /*
  * Plugin Name: Pastacode & SH Plugin
  * Plugin URI:   https://github.com/Webaib/PastacodeAndSyntaxHighlighter
- * Description: Embed GitHub, Gist, Pastebin, Bitbucket or whatever remote files and even your own
- * code by copy/pasting. Version: 1.3.1.1 Author: Willy Bahuaud Author URI: http://wabeo.fr 
- * Contributors, juliobox, willybahuaud, jpavlov 
+ * Description: Embed GitHub, Gist, Pastebin, Bitbucket or whatever remote files and even your own code by copy/pasting. 
+ * Version: 1.3.1.1 
+ * Author: Willy Bahuaud Contributors, juliobox, willybahuaud, jpavlov 
  */
 
 const PASTACODE_VERSION = '1.3.1.1';
 
 $initSH = false;
 
-add_action ( 'plugins_loaded', 'pastacode_load_languages' );
+add_action('plugins_loaded', 'pastacode_load_languages');
 
+/**
+ *  TBA
+ * 
+ *  @return unknown
+ */
 function pastacode_load_languages() {
-    load_plugin_textdomain('pastacode', false, dirname(plugin_basename(__FILE__)) . '/languages/'); 
+    load_plugin_textdomain(
+        'pastacode', 
+        false, dirname(plugin_basename(__FILE__)) . '/languages/'
+    ); 
 }
 
 add_shortcode('pastacode', 'sc_pastacode');
 
+/**
+ * TBA
+ * 
+ * @param unknown $atts    tba
+ * @param string  $content tba
+ * 
+ * @return multitype:|string
+ */
 function sc_pastacode($atts, $content = "") {
-	$atts = shortcode_atts(array (
+	$atts = shortcode_atts(
+	    array (
             'provider'      => '',
             'user'          => '',
             'path_id'       => '',
@@ -33,125 +50,189 @@ function sc_pastacode($atts, $content = "") {
             'message'       => '',
             'linenumbers'   => 'n',
             'showinvisible' => 'n' 
-	), $atts, 'sc_pastacode');
+	   ), $atts, 'sc_pastacode'
+	);
 	
-	if (empty($atts ['provider']) && ! empty($content))
+	if (empty($atts ['provider']) && ! empty($content)) {
         $atts ['provider'] = md5($content);
+	}
 	
     $code_embed_transient = 'pastacode_' . substr(md5(serialize($atts)), 0, 14);
 	
 	$time = get_option('pastacode_cache_duration', DAY_IN_SECONDS * 7);
 	
-	if ($atts ['provider'] == 'manual')
+	if ($atts['provider'] == 'manual') {
         $time = - 1;
+	}
     
     if ($time == - 1 || ! $source = get_transient($code_embed_transient)) {
-		$source = apply_filters('pastacode_' . $atts ['provider'], array (), $atts, $content);
+		$source = apply_filters(
+		    'pastacode_' . $atts ['provider'], array (), $atts, $content
+		);
 		
 		if (!empty($source ['code'])) {
 			// Wrap lines
 			if ($lines = $atts ['lines']) {
-				$lines = array_map ( 'intval', explode ( '-', $lines ) );
-				$source ['code'] = implode ( "\n", array_slice ( preg_split ( '/\r\n|\r|\n/', $source ['code'] ), $lines [0] - 1, ($lines [1] - $lines [0]) + 1 ) );
+				$lines = array_map('intval', explode('-', $lines));
+				$source ['code'] = implode(
+				    "\n", 
+                    array_slice(
+				        preg_split('/\r\n|\r|\n/', $source ['code']), 
+				        $lines [0] - 1, ($lines [1] - $lines [0]) + 1
+                    )
+                );
 			}
-			if ($time > - 1)
-				set_transient ( $code_embed_transient, $source, $time );
+			
+			if ($time > - 1) {
+				set_transient($code_embed_transient, $source, $time);
+			}
 		}
 	}
 	
-	if (! empty ( $source ['code'] )) {
-		
+	if (!empty ( $source ['code'])) {
 		// Load scripts
-		wp_enqueue_style ( 'prismcss' );
-		wp_enqueue_script ( 'prismjs' );
+		wp_enqueue_style('prismcss');
+		wp_enqueue_script('prismjs');
 		
 		$ln_class = '';
-		if ('y' === get_option ( 'pastacode_linenumbers', 'n' )) {
-			wp_enqueue_style ( 'prism-linenumbercss' );
-			wp_enqueue_script ( 'prism-linenumber' );
+		if ('y' === get_option('pastacode_linenumbers', 'n')) {
+			wp_enqueue_style('prism-linenumbercss');
+			wp_enqueue_script('prism-linenumber');
 			$ln_class = ' line-numbers';
 		}
-		if ('y' === get_option ( 'pastacode_showinvisible', 'n' )) {
-			wp_enqueue_style ( 'prism-show-invisiblecss' );
-			wp_enqueue_script ( 'prism-show-invisible' );
+		if ('y' === get_option('pastacode_showinvisible', 'n')) {
+			wp_enqueue_style('prism-show-invisiblecss');
+			wp_enqueue_script('prism-show-invisible');
 		}
 		// highlight
-		if (preg_match ( '/([0-9-,]+)/', $atts ['highlight'] )) {
+		if (preg_match('/([0-9-,]+)/', $atts ['highlight'])) {
 			$highlight_val = ' data-line="' . $atts ['highlight'] . '"';
-			wp_enqueue_script ( 'prism-highlight' );
-			wp_enqueue_style ( 'prism-highlightcss' );
+			wp_enqueue_script('prism-highlight');
+			wp_enqueue_style('prism-highlightcss');
 		} else {
 			$highlight_val = '';
 		}
 		
 		// Wrap
 		$output = array ();
-		$output [] = '<div class="code-embed-wrapper">';
+		$output[] = '<div class="code-embed-wrapper">';
 		
-		$output [] = '<pre class="brush: js; tab-size: 4">';
-		// $output[] = '<pre class="language-' . sanitize_html_class( $atts['lang'] ) . ' code-embed-pre' . $ln_class . '" ' . $highlight_val . '>'
-		$output [] = $source ['code'] . '</pre>';
-		$output [] = '<div class="code-embed-infos">';
-		if (isset ( $source ['url'] ))
-			$output [] = '<a href="' . esc_url ( $source ['url'] ) . '" title="' . sprintf ( esc_attr__ ( 'See %s', 'pastacode' ), $source ['name'] ) . '" target="_blank" class="code-embed-name">' . esc_html ( $source ['name'] ) . '</a>';
-		if (isset ( $source ['raw'] ))
-			$output [] = '<a href="' . esc_url ( $source ['raw'] ) . '" title="' . sprintf ( esc_attr__ ( 'Back to %s' ), $source ['name'] ) . '" class="code-embed-raw" target="_blank">' . __ ( 'view raw', 'pastacode' ) . '</a>';
-		if (! isset ( $source ['url'] ) && ! isset ( $source ['raw'] ) && isset ( $source ['name'] ))
-			$output [] = '<span class="code-embed-name">' . $source ['name'] . '</span>';
-		$output [] = '</div>';
-		$output [] = '</div>';
+		$output[] = '<pre class="brush: js; tab-size: 4">';
+		// $output[] = '<pre class="language-' . sanitize_html_class($atts['lang'])
+		// . ' code-embed-pre' . $ln_class . '" ' . $highlight_val . '>'
+		$output[] = $source['code'] . '</pre>';
+		$output[] = '<div class="code-embed-infos">';
+		if (isset($source['url'])) {
+			$output[] = '<a href="' . esc_url($source['url']) . '" title="' 
+                . sprintf(esc_attr__('See %s', 'pastacode'), $source['name']) 
+                . '" target="_blank" class="code-embed-name">' 
+                . esc_html($source['name']) . '</a>';
+		}
+		if (isset($source['raw'])) {
+			$output[] = '<a href="' . esc_url($source['raw']) . '" title="' 
+			    . sprintf(esc_attr__('Back to %s'), $source['name']) 
+                . '" class="code-embed-raw" target="_blank">' 
+                . __('view raw', 'pastacode') . '</a>';
+		}
+		if (!isset($source['url']) && !isset($source['raw']) 
+            && isset($source['name'])
+		) {
+            $output[] = '<span class="code-embed-name">' . $source['name'] 
+                . '</span>';
+		}
+		
+		$output[] = '</div>';
+		$output[] = '</div>';
 		
 		initSHL($output);
 		
-		$output = implode ( "\n", $output );
+		$output = implode("\n", $output);
 		
 		return $output;
-	} elseif (! empty ( $atts ['message'] )) {
-		return '<span class="pastacode_message">' . esc_html ( $atts ['message'] ) . '</span>';
+	} elseif (!empty($atts['message'])) {
+		return '<span class="pastacode_message">' . esc_html($atts['message']) 
+		  . '</span>';
 	}
 }
 
+/**
+ * TBA
+ * 
+ * @param array &$output tba
+ * 
+ * @return unknown
+ */
 function initSHL(array &$output) {
     global $initSH;
     
-    if (! $initSH) {
+    if (!$initSH) {
         $initSH = true;
-        $output [] = '<script type="text/javascript" src="' . plugins_url('js/shCore.js', __FILE__) . '"></script>';
-        $output [] = '<script type="text/javascript" src="' . plugins_url('js/shAutoloader.js', __FILE__) . '"></script>';
-        //$output [] = '<script type="text/javascript" src="' . plugins_url('js/shBrushJScript.js', __FILE__) . '"></script>';
-        $output [] = '<link href="' . plugins_url('css/shCore.css', __FILE__) . '" rel="stylesheet" type="text/css" />';
-        $output [] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__) . '" rel="stylesheet" type="text/css" />';
-        $output [] = '<script type="text/javascript">SyntaxHighlighter.all()</script>';
-        $output [] = '<script type="text/javascript">SyntaxHighlighter.autoloader("js ' 
-                . plugins_url('js/shBrushJScript.js', __FILE__) . '")</script>';
+        $output[] = '<script type="text/javascript" src="' 
+            . plugins_url('js/shCore.js', __FILE__) . '"></script>';
+        $output[] = '<script type="text/javascript" src="' 
+            . plugins_url('js/shAutoloader.js', __FILE__) . '"></script>';
+        //$output [] = '<script type="text/javascript" src="' 
+        //. plugins_url('js/shBrushJScript.js', __FILE__) . '"></script>';
+        $output[] = '<link href="' . plugins_url('css/shCore.css', __FILE__) 
+            . '" rel="stylesheet" type="text/css" />';
+        $output[] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__)
+            . '" rel="stylesheet" type="text/css" />';
+        $output[] = '<script type="text/javascript">' 
+            . 'SyntaxHighlighter.all()</script>';
+        $output[] = '<script type="text/javascript">'
+            .'SyntaxHighlighter.autoloader("js ' 
+            . plugins_url('js/shBrushJScript.js', __FILE__) . '")</script>';
     }
 }
 
-add_filter( 'pastacode_github', '_pastacode_github', 10, 2 );
+add_filter('pastacode_github', '_pastacode_github', 10, 2);
+
+/**
+ * TBA
+ * 
+ * @param unknown $source tba
+ * @param unknown $atts   tba
+ * 
+ * @return unknown
+ */
 function _pastacode_github( $source, $atts ) {
-    extract( $atts );
-    if( $user && $repos && $path_id ) {
+    extract($atts);
+    if ($user && $repos && $path_id) {
         $b64dcd = 'b'.'a'.'s'.'e'.'6'.'4'.'_'.'d'.'e'.'c'.'o'.'d'.'e';
-        $req  = wp_sprintf( 'https://api.github.com/repos/%s/%s/contents/%s', $user, $repos, $path_id );
-        $code = wp_remote_get( $req );
-        if( ! is_wp_error( $code ) && 200 == wp_remote_retrieve_response_code( $code ) ) {
-            $data = json_decode( wp_remote_retrieve_body( $code ) );
-            $source[ 'name' ] = $data->name;
-            $source[ 'code' ] = esc_html( $b64dcd ( $data->content ) );
-            $source[ 'url' ]  = $data->html_url;
-            $source[ 'raw' ]  = wp_sprintf( 'https://raw.github.com/%s/%s/%s/%s', $user, $repos, $revision, $path_id );
+        $req  = wp_sprintf(
+            'https://api.github.com/repos/%s/%s/contents/%s', $user, $repos, $path_id
+        );
+        $code = wp_remote_get($req);
+        if (!is_wp_error($code) && 200 == wp_remote_retrieve_response_code($code)) {
+            $data = json_decode(wp_remote_retrieve_body($code));
+            $source['name'] = $data->name;
+            $source['code'] = esc_html($b64dcd($data->content));
+            $source['url']  = $data->html_url;
+            $source['raw']  = wp_sprintf(
+                'https://raw.github.com/%s/%s/%s/%s', 
+                $user, $repos, $revision, $path_id
+            );
         } else {
-            $req2 = wp_sprintf( 'https://raw.github.com/%s/%s/%s/%s', $user, $repos, $revision, $path_id );
-            $code = wp_remote_get( $req2 );
-            if( ! is_wp_error( $code ) && 200 == wp_remote_retrieve_response_code( $code ) ) {
-                $name = explode( '/', $path_id );
-                $source[ 'name' ] = $name[ count( $name ) - 1 ];
-                $source[ 'code' ] = esc_html( wp_remote_retrieve_body( $code ) );
-                $source[ 'url' ]  = wp_sprintf( 'https://github.com/%s/%s/blob/%s/%s', $user, $repos, $revision, $path_id );
-                $source[ 'raw' ]  = $req2;
+            $req2 = wp_sprintf(
+                'https://raw.github.com/%s/%s/%s/%s', $user, $repos, $revision,
+                $path_id
+            );
+            $code = wp_remote_get($req2);
+            if (!is_wp_error($code) 
+                && 200 == wp_remote_retrieve_response_code($code)
+            ) {
+                $name = explode('/', $path_id);
+                $source['name'] = $name[count($name) - 1];
+                $source['code'] = esc_html(wp_remote_retrieve_body($code));
+                $source['url']  = wp_sprintf(
+                    'https://github.com/%s/%s/blob/%s/%s', $user, $repos, $revision,
+                    $path_id 
+                );
+                $source['raw']  = $req2;
             }
         }
     }
+    
     return $source;
 }
 
