@@ -209,8 +209,8 @@ function _pastacode_github( $source, $atts ) {
             $source['code'] = esc_html($b64dcd($data->content));
             $source['url']  = $data->html_url;
             $source['raw']  = wp_sprintf(
-                'https://raw.github.com/%s/%s/%s/%s', 
-                $user, $repos, $revision, $path_id
+                'https://raw.github.com/%s/%s/%s/%s', $user, $repos, $revision,
+                $path_id
             );
         } else {
             $req2 = wp_sprintf(
