@@ -10,7 +10,9 @@
 
 const PASTACODE_VERSION = '1.3.1.1';
 
-$initSH = false;
+const INIT_SH = 'initSH';
+
+$shState = array(INIT_SH => false);
 
 add_action('plugins_loaded', 'pastacode_load_languages');
 
@@ -117,7 +119,7 @@ function sc_pastacode($atts, $content = "") {
 		$output = array ();
 		$output[] = '<div class="code-embed-wrapper">';
 		
-		$output[] = '<pre class="brush: js; tab-size: 4">';
+		$output[] = '<pre class="brush: java; tab-size: 4">';
 		// $output[] = '<pre class="language-' . sanitize_html_class($atts['lang'])
 		// . ' code-embed-pre' . $ln_class . '" ' . $highlight_val . '>'
 		$output[] = $source['code']. '</pre>';
@@ -144,7 +146,7 @@ function sc_pastacode($atts, $content = "") {
 		$output[] = '</div>';
 		$output[] = '</div>';
 		
-		initSHL($output);
+		initSH($atts, $output);
 		
 		$output = implode("\n", $output);
 		
@@ -158,30 +160,46 @@ function sc_pastacode($atts, $content = "") {
 /**
  * TBA
  * 
+ * @param array &$atts   tba
  * @param array &$output tba
  * 
  * @return unknown
  */
-function initSHL(array &$output) {
-    global $initSH;
+function initSH(array &$atts, array &$output) {
+    global $shState;
     
-    if (!$initSH) {
-        $initSH = true;
+    if (!$shState[INIT_SH]) {
+        $shState[INIT_SH] = true;
         $output[] = '<script type="text/javascript" src="' 
             . plugins_url('js/shCore.js', __FILE__) . '"></script>';
+
         $output[] = '<script type="text/javascript" src="' 
             . plugins_url('js/shAutoloader.js', __FILE__) . '"></script>';
-        //$output[] = '<script type="text/javascript" src="' 
-        //. plugins_url('js/shBrushJScript.js', __FILE__) . '"></script>';
+        
         $output[] = '<link href="' . plugins_url('css/shCore.css', __FILE__) 
             . '" rel="stylesheet" type="text/css" />';
+        
         $output[] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__)
             . '" rel="stylesheet" type="text/css" />';
+        
         $output[] = '<script type="text/javascript">' 
             . 'SyntaxHighlighter.all()</script>';
-        $output[] = '<script type="text/javascript">'
-            .'SyntaxHighlighter.autoloader("js ' 
-            . plugins_url('js/shBrushJScript.js', __FILE__) . '")</script>';
+    }
+    
+    if (!$shState[$atts['lang']]) {
+        $shState[$atts['lang']] = true;
+    
+        if ($atts['lang'] == 'java') {
+            $output[] = '<script type="text/javascript">'
+                .'SyntaxHighlighter.autoloader("java '
+                    . plugins_url('js/shBrushJava.js', __FILE__) . '")</script>';
+        }
+        
+        if ($atts['lang'] == 'javascript') {
+            $output[] = '<script type="text/javascript">'
+                .'SyntaxHighlighter.autoloader("js '
+                    . plugins_url('js/shBrushJScript.js', __FILE__) . '")</script>';
+        }
     }
 }
 
