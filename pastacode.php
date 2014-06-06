@@ -119,7 +119,7 @@ function sc_pastacode($atts, $content = "") {
 		$output = array ();
 		$output[] = '<div class="code-embed-wrapper">';
 		
-		$output[] = '<pre class="brush: java; tab-size: 4">';
+		$output[] = '<pre class="brush: ' . $atts['lang'] . '; tab-size: 4">';
 		// $output[] = '<pre class="language-' . sanitize_html_class($atts['lang'])
 		// . ' code-embed-pre' . $ln_class . '" ' . $highlight_val . '>'
 		$output[] = $source['code']. '</pre>';
@@ -195,7 +195,7 @@ function initSH(array &$atts, array &$output) {
                     . plugins_url('js/shBrushJava.js', __FILE__) . '")</script>';
         }
         
-        if ($atts['lang'] == 'javascript') {
+        if ($atts['lang'] == 'js') {
             $output[] = '<script type="text/javascript">'
                 .'SyntaxHighlighter.autoloader("js '
                     . plugins_url('js/shBrushJScript.js', __FILE__) . '")</script>';
@@ -861,19 +861,19 @@ function pastacode_text() {
 
     // Languages
     $langs  = array(
-        'markup'       => 'HTML',
-        'css'          => 'CSS',
-        'javascript'   => 'JavaScript',
-        'php'          => 'PHP',
-        'c'            => 'C',
-        'c++'          => 'C++',
-        'java'         => 'Java',
-        'sass'         => 'Sass',
-        'python'       => 'Python',
-        'sql'          => 'SQL',
-        'ruby'         => 'Ruby',
-        'coffeescript' => 'CoffeeScript',
-        'bash'         => 'Bash'
+        'markup'        => 'HTML',
+        'css'           => 'CSS',
+        'js'            => 'JavaScript',
+        'php'           => 'PHP',
+        'c'             => 'C',
+        'c++'           => 'C++',
+        'java'          => 'Java',
+        'sass'          => 'Sass',
+        'python'        => 'Python',
+        'sql'           => 'SQL',
+        'ruby'          => 'Ruby',
+        'coffeescript'  => 'CoffeeScript',
+        'bash'          => 'Bash'
     );
     $langs = apply_filters('pastacode_langs', $langs);
 
