@@ -28,6 +28,88 @@ function pastacode_load_languages() {
     ); 
 }
 
+//Register scripts
+add_action('wp_enqueue_scripts', 'pastacode_enqueue_prismjs');
+// add_action('init', 'pastacode_enqueue_prismjs');
+
+/**
+ * TBA
+ *
+ *  @return unknown
+ */
+function pastacode_enqueue_prismjs() {
+    $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+
+    wp_register_script(
+        'prismjs', plugins_url('/js/prism.js', __FILE__), false, PASTACODE_VERSION,
+        false
+    );
+    
+    wp_register_script(
+        'prism-highlight',
+        plugins_url(
+            '/plugins/line-highlight/prism-line-highlight' . $suffix . '.js',
+            __FILE__
+        ),
+        array('prismjs'), PASTACODE_VERSION, true
+    );
+    wp_register_script(
+        'prism-linenumber',
+        plugins_url(
+            '/plugins/line-numbers/prism-line-numbers' . $suffix . '.js',
+            __FILE__
+        ),
+        array('prismjs'), PASTACODE_VERSION, true
+    );
+    wp_register_script(
+        'prism-show-invisible',
+        plugins_url(
+            '/plugins/show-invisibles/prism-show-invisibles' . $suffix . '.js',
+            __FILE__
+        ),
+        array('prismjs'), PASTACODE_VERSION, true
+    );
+    wp_register_style(
+        'prismcss',
+        plugins_url(
+            '/css/' . get_option('pastacode_style', 'prism') . '.css', __FILE__
+        ),
+        false, PASTACODE_VERSION, 'all'
+    );
+    wp_register_style(
+        'prism-highlightcss',
+        plugins_url('/plugins/line-highlight/prism-line-highlight.css', __FILE__),
+        false, PASTACODE_VERSION, 'all'
+    );
+    wp_register_style(
+        'prism-linenumbercss',
+        plugins_url('/plugins/line-numbers/prism-line-numbers.css', __FILE__),
+        false, PASTACODE_VERSION, 'all'
+    );
+    wp_register_style(
+        'prism-show-invisiblecss',
+        plugins_url('/plugins/show-invisibles/prism-show-invisibles.css', __FILE__),
+        false, PASTACODE_VERSION, 'all'
+    );
+
+    if (apply_filters('pastacode_ajax', false)) {
+        wp_enqueue_script('prismjs');
+        wp_enqueue_style('prismcss');
+        wp_enqueue_style('prism-highlightcss');
+        wp_enqueue_script('prism-highlight');
+
+        if ('y' === get_option('pastacode_linenumbers', 'n')) {
+            wp_enqueue_style('prism-linenumbercss');
+            wp_enqueue_script('prism-linenumber');
+            $ln_class = ' line-numbers';
+        }
+        if ('y' === get_option('pastacode_showinvisible', 'n')) {
+            wp_enqueue_style('prism-show-invisiblecss');
+            wp_enqueue_script('prism-show-invisible');
+        }
+    }
+}
+
 add_shortcode('pastacode', 'sc_pastacode');
 
 /**
@@ -51,7 +133,8 @@ function sc_pastacode($atts, $content = "") {
             'highlight'     => '',
             'message'       => '',
             'linenumbers'   => 'n',
-            'showinvisible' => 'n' 
+            'showinvisible' => 'n',
+            'tabSize'       => '4'
 	  ), $atts, 'sc_pastacode'
 	);
 	
@@ -119,23 +202,26 @@ function sc_pastacode($atts, $content = "") {
 		$output = array ();
 		$output[] = '<div class="code-embed-wrapper">';
 		
-		$output[] = '<pre class="brush: ' . $atts['lang'] . '; tab-size: 4">';
-		// $output[] = '<pre class="language-' . sanitize_html_class($atts['lang'])
-		// . ' code-embed-pre' . $ln_class . '" ' . $highlight_val . '>'
-		$output[] = $source['code']. '</pre>';
+		$output[] = '<pre class="brush: ' . $atts['lang'] . '; tab-size: ' 
+		    . $atts['tabSize'] . '">';
+		$output[] = $source['code'] . '</pre>';
+		
 		$output[] = '<div class="code-embed-infos">';
+
 		if (isset($source['url'])) {
 			$output[] = '<a href="' . esc_url($source['url']) . '" title="' 
                 . sprintf(esc_attr__('See %s', 'pastacode'), $source['name']) 
                 . '" target="_blank" class="code-embed-name">' 
                 . esc_html($source['name']) . '</a>';
 		}
+		
 		if (isset($source['raw'])) {
 			$output[] = '<a href="' . esc_url($source['raw']) . '" title="' 
 			    . sprintf(esc_attr__('Back to %s'), $source['name']) 
                 . '" class="code-embed-raw" target="_blank">' 
                 . __('view raw', 'pastacode') . '</a>';
 		}
+		
 		if (!isset($source['url']) && !isset($source['raw']) 
             && isset($source['name'])
 		) {
@@ -170,11 +256,12 @@ function initSH(array &$atts, array &$output) {
     
     if (!$shState[INIT_SH]) {
         $shState[INIT_SH] = true;
-        $output[] = '<script type="text/javascript" src="' 
-            . plugins_url('js/shCore.js', __FILE__) . '"></script>';
-
-        $output[] = '<script type="text/javascript" src="' 
-            . plugins_url('js/shAutoloader.js', __FILE__) . '"></script>';
+        
+        $output[] = '<script type="text/javascript" src="'
+            . plugins_url('/js/shCore.js', __FILE__) . '"></script>';
+        
+        $output[] = '<script type="text/javascript" src="'
+            . plugins_url('/js/shAutoloader.js', __FILE__) . '"></script>';
         
         $output[] = '<link href="' . plugins_url('css/shCore.css', __FILE__) 
             . '" rel="stylesheet" type="text/css" />';
@@ -182,7 +269,7 @@ function initSH(array &$atts, array &$output) {
         $output[] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__)
             . '" rel="stylesheet" type="text/css" />';
         
-        $output[] = '<script type="text/javascript">' 
+        $output[] = '<script type="text/javascript">'
             . 'SyntaxHighlighter.all()</script>';
     }
     
@@ -460,85 +547,6 @@ function pastacode_plugin_row_meta($plugin_meta, $plugin_file) {
     }
     
     return $plugin_meta;
-}
-
-//Register scripts
-add_action('wp_enqueue_scripts', 'pastacode_enqueue_prismjs');
-
-/**
- * TBA
- * 
- *  @return unknown
- */
-function pastacode_enqueue_prismjs() {
-    $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
-    wp_register_script(
-        'prismjs', plugins_url('/js/prism.js', __FILE__), false, PASTACODE_VERSION, 
-        true
-    );
-    wp_register_script(
-        'prism-highlight', 
-        plugins_url(
-            '/plugins/line-highlight/prism-line-highlight' . $suffix . '.js',
-            __FILE__
-        ), 
-        array('prismjs'), PASTACODE_VERSION, true
-    );
-    wp_register_script(
-        'prism-linenumber', 
-        plugins_url(
-            '/plugins/line-numbers/prism-line-numbers' . $suffix . '.js',
-            __FILE__
-        ), 
-        array('prismjs'), PASTACODE_VERSION, true
-    );
-    wp_register_script(
-        'prism-show-invisible', 
-        plugins_url(
-            '/plugins/show-invisibles/prism-show-invisibles' . $suffix . '.js',
-            __FILE__
-        ), 
-        array('prismjs'), PASTACODE_VERSION, true
-    );
-    wp_register_style(
-        'prismcss', 
-        plugins_url(
-            '/css/' . get_option('pastacode_style', 'prism') . '.css', __FILE__
-        ), 
-        false, PASTACODE_VERSION, 'all'
-    );      
-    wp_register_style(
-        'prism-highlightcss', 
-        plugins_url('/plugins/line-highlight/prism-line-highlight.css', __FILE__), 
-        false, PASTACODE_VERSION, 'all'
-    );      
-    wp_register_style(
-        'prism-linenumbercss', 
-        plugins_url('/plugins/line-numbers/prism-line-numbers.css', __FILE__),
-        false, PASTACODE_VERSION, 'all'
-    );  
-    wp_register_style(
-        'prism-show-invisiblecss', 
-        plugins_url('/plugins/show-invisibles/prism-show-invisibles.css', __FILE__),
-        false, PASTACODE_VERSION, 'all'
-    );      
-    
-    if (apply_filters('pastacode_ajax', false)) {       
-        wp_enqueue_script('prismjs');
-        wp_enqueue_style('prismcss');
-        wp_enqueue_style('prism-highlightcss');
-        wp_enqueue_script('prism-highlight');
-
-        if ('y' === get_option('pastacode_linenumbers', 'n')) {
-            wp_enqueue_style('prism-linenumbercss');
-            wp_enqueue_script('prism-linenumber');
-            $ln_class = ' line-numbers';
-        }
-        if ('y' === get_option('pastacode_showinvisible', 'n')) {
-            wp_enqueue_style('prism-show-invisiblecss');
-            wp_enqueue_script('prism-show-invisible');  
-        }
-    } 
 }
 
 add_filter(
