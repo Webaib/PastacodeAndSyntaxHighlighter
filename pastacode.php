@@ -1,12 +1,14 @@
 <?php
 
-/*
+/**
  * Plugin Name: Pastacode & SH Plugin
  * Plugin URI:   https://github.com/Webaib/PastacodeAndSyntaxHighlighter
  * Description: Embed GitHub, Gist, Pastebin, Bitbucket or whatever remote files and even your own code by copy/pasting. 
  * Version: 1.3.1.1 
  * Author: Willy Bahuaud Contributors, juliobox, willybahuaud, jpavlov 
  */
+
+require_once 'SHLoader.php';
 
 const PASTACODE_VERSION = '1.3.1.1';
 
@@ -30,7 +32,6 @@ function pastacode_load_languages() {
 
 //Register scripts
 add_action('wp_enqueue_scripts', 'pastacode_enqueue_prismjs');
-// add_action('init', 'pastacode_enqueue_prismjs');
 
 /**
  * TBA
@@ -39,7 +40,7 @@ add_action('wp_enqueue_scripts', 'pastacode_enqueue_prismjs');
  */
 function pastacode_enqueue_prismjs() {
     $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
-
+    
     wp_register_script(
         'prismjs', plugins_url('/js/prism.js', __FILE__), false, PASTACODE_VERSION,
         false
@@ -91,7 +92,8 @@ function pastacode_enqueue_prismjs() {
         plugins_url('/plugins/show-invisibles/prism-show-invisibles.css', __FILE__),
         false, PASTACODE_VERSION, 'all'
     );
-
+    
+    
     if (apply_filters('pastacode_ajax', false)) {
         wp_enqueue_script('prismjs');
         wp_enqueue_style('prismcss');
@@ -232,7 +234,7 @@ function sc_pastacode($atts, $content = "") {
 		$output[] = '</div>';
 		$output[] = '</div>';
 		
-		initSH($atts, $output);
+		callSH($atts, $output);
 		
 		$output = implode("\n", $output);
 		
@@ -251,43 +253,20 @@ function sc_pastacode($atts, $content = "") {
  * 
  * @return unknown
  */
-function initSH(array &$atts, array &$output) {
+function callSH(array &$atts, array &$output) {
     global $shState;
+    
+    $loader = new SHLoader();
     
     if (!$shState[INIT_SH]) {
         $shState[INIT_SH] = true;
-        
-        $output[] = '<script type="text/javascript" src="'
-            . plugins_url('/js/shCore.js', __FILE__) . '"></script>';
-        
-        $output[] = '<script type="text/javascript" src="'
-            . plugins_url('/js/shAutoloader.js', __FILE__) . '"></script>';
-        
-        $output[] = '<link href="' . plugins_url('css/shCore.css', __FILE__) 
-            . '" rel="stylesheet" type="text/css" />';
-        
-        $output[] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__)
-            . '" rel="stylesheet" type="text/css" />';
-        
-        $output[] = '<script type="text/javascript">'
-            . 'SyntaxHighlighter.all()</script>';
+        $loader->initSH($output);
     }
     
-    if (!$shState[$atts['lang']]) {
-        $shState[$atts['lang']] = true;
-    
-        if ($atts['lang'] == 'java') {
-            $output[] = '<script type="text/javascript">'
-                .'SyntaxHighlighter.autoloader("java '
-                    . plugins_url('js/shBrushJava.js', __FILE__) . '")</script>';
-        }
-        
-        if ($atts['lang'] == 'js') {
-            $output[] = '<script type="text/javascript">'
-                .'SyntaxHighlighter.autoloader("js '
-                    . plugins_url('js/shBrushJScript.js', __FILE__) . '")</script>';
-        }
-    }
+//     if (!$shState[$atts['lang']]) {
+//         $shState[$atts['lang']] = true;
+//         $loader->initSHLang($atts['lang'], $output);
+//     }
 }
 
 add_filter('pastacode_github', '_pastacode_github', 10, 2);
