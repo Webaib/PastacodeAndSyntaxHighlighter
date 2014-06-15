@@ -37,7 +37,7 @@ class SHLoader {
         'vb'        => 'js/shBrushVb.js',
         'xml'       => 'js/shBrushXml.js'
     );
-    
+        
     /**
      * TBA
      * 
@@ -46,11 +46,10 @@ class SHLoader {
      * @return void
      */
     public function initSH(array &$output) {
-        $output[] = '<script type="text/javascript" src="'
-            . plugins_url('/js/shCore.js', __FILE__) . '"></script>';
+        $ver = constant('PASTACODE_VERSION');
         
         $output[] = '<script type="text/javascript" src="'
-            . plugins_url('/js/shAutoloader.js', __FILE__) . '"></script>';
+            . plugins_url('/js/shCore.js?ver=' . $ver, __FILE__) . '"></script>';
         
         $output[] = '<link href="' . plugins_url('css/shCore.css', __FILE__)
             . '" rel="stylesheet" type="text/css" />';
@@ -71,8 +70,11 @@ class SHLoader {
      * @return void
      */ 
     public function initSHLang($lang, array &$output) {
+        $ver = constant('PASTACODE_VERSION');
+        
         $output[] = '<script type="text/javascript" src="' 
-            . plugins_url($this->brushMap[$lang], __FILE__) . '"></script>';
+            . plugins_url($this->brushMap[$lang] . '?ver=' . $ver, __FILE__) 
+            . '"></script>';
     }
 }
 
