@@ -256,6 +256,11 @@ function sc_pastacode($atts, $content = "") {
 function callSH(array &$atts, array &$output) {
     global $shState;
     
+    $brushMap = array(
+            'java' => 'js/shBrushJava.js',
+            'js'   => 'js/shBrushJScript.js'
+    );
+    
     $loader = new SHLoader();
     
     if (!$shState[INIT_SH]) {
@@ -263,10 +268,10 @@ function callSH(array &$atts, array &$output) {
         $loader->initSH($output);
     }
     
-//     if (!$shState[$atts['lang']]) {
-//         $shState[$atts['lang']] = true;
-//         $loader->initSHLang($atts['lang'], $output);
-//     }
+    if (!$shState[$atts['lang']]) {
+        $shState[$atts['lang']] = true;
+        $loader->initSHLang($atts['lang'], $output);
+    }
 }
 
 add_filter('pastacode_github', '_pastacode_github', 10, 2);
@@ -848,19 +853,30 @@ function pastacode_text() {
 
     // Languages
     $langs  = array(
-        'markup'        => 'HTML',
-        'css'           => 'CSS',
-        'js'            => 'JavaScript',
-        'php'           => 'PHP',
-        'c'             => 'C',
-        'c++'           => 'C++',
-        'java'          => 'Java',
-        'sass'          => 'Sass',
-        'python'        => 'Python',
-        'sql'           => 'SQL',
-        'ruby'          => 'Ruby',
-        'coffeescript'  => 'CoffeeScript',
-        'bash'          => 'Bash'
+        'ap'        => 'AppleScript',
+        'as3'       => 'ActionScript3',
+        'bash'      => 'Bash',
+        'cf'        => 'CoffeeScript',
+        'cpp'       => 'C++',
+        'csharp'    => 'C#',
+        'css'       => 'CSS',
+        'pascal'    => 'Pascal',
+        'diff'      => 'Diff',
+        'erlang'    => 'Erlang',
+        'groovy'    => 'Groovy',
+        'haxe'      => 'Haxe',
+        'java'      => 'Java',
+        'javafx'    => 'JavaFX',
+        'js'        => 'JavaScript',
+        'perl'      => 'Perl',
+        'php'       => 'PHP',
+        'plain'     => 'Plain',
+        'python'    => 'Python',
+        'ruby'      => 'Ruby',
+        'scala'     => 'Scala',
+        'sql'       => 'SQL',
+        'vb'        => 'VisualBasic',
+        'xml'       => 'XML'
     );
     $langs = apply_filters('pastacode_langs', $langs);
 
