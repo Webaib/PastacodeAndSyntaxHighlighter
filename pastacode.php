@@ -512,9 +512,9 @@ function pastacode_create_menu() {
  * 
  * @param unknown $args tba
  * 
- * @return unknown
+ * @return void
  */
-function pastacode_setting_callback_function($args) {
+function settingCallbackSelect($args) {
     extract($args);
 
     $value_old = get_option($name);
@@ -527,6 +527,21 @@ function pastacode_setting_callback_function($args) {
     }
     
     echo '</select>';
+}
+
+/**
+ * TBA
+ *
+ * @param unknown $args tba
+ *
+ * @return void
+ */
+function settingCallbackInput($args) {
+    extract($args);
+    
+    $value_old = get_option($name);
+    
+    echo '<input name="' . $name . '" id="' . $name . '"/>';
 }
 
 
@@ -551,7 +566,7 @@ function pastacode_settings_page() {
         add_settings_field(
             'pastacode_cache_duration',
             __('Caching duration', 'pastacode'),
-            'pastacode_setting_callback_function',
+            'settingCallbackSelect',
             'pastacode',
             'pastacode_setting_section',
             array(
@@ -567,10 +582,11 @@ function pastacode_settings_page() {
             )
         );
     
+        //TODO
         add_settings_field(
             'pastacode_style',
             __('Syntax Coloration Style', 'pastacode'),
-            'pastacode_setting_callback_function',
+            'settingCallbackSelect',
             'pastacode',
             'pastacode_setting_section',
             array(
@@ -586,11 +602,22 @@ function pastacode_settings_page() {
                 'name' => 'pastacode_style'
             )
         );
+        
+        add_settings_field(
+            'tabSize',
+            __('Tab size', 'pastacode'),
+            'settingCallbackInput',
+            'pastacode',
+            'pastacode_setting_section',
+            array(
+                'name' => 'tabSize'
+            )
+        );
     
         add_settings_field(
             'pastacode_linenumbers',
             __('Show line numbers', 'pastacode'),
-            'pastacode_setting_callback_function',
+            'settingCallbackSelect',
             'pastacode',
             'pastacode_setting_section',
             array(
@@ -605,7 +632,7 @@ function pastacode_settings_page() {
         add_settings_field(
             'pastacode_showinvisible',
             __('Show invisible chars', 'pastacode'),
-            'pastacode_setting_callback_function',
+            'settingCallbackSelect',
             'pastacode',
             'pastacode_setting_section',
             array(
@@ -808,7 +835,7 @@ function pastacode_text() {
         'xml'       => 'XML'
     );
     $langs = apply_filters('pastacode_langs', $langs);
-
+    
     // Other fields
     $fields = array(
         'username' => array(
