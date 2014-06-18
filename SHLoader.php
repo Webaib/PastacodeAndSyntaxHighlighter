@@ -54,9 +54,6 @@ class SHLoader {
         $output[] = '<link href="' . plugins_url('css/shCore.css', __FILE__)
             . '" rel="stylesheet" type="text/css" />';
         
-        $output[] = '<link href="' . plugins_url('css/shThemeDefault.css', __FILE__)
-            . '" rel="stylesheet" type="text/css" />';
-        
         $output[] = '<script type="text/javascript">'
             . 'SyntaxHighlighter.all()</script>';
     }

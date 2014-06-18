@@ -591,13 +591,14 @@ function pastacode_settings_page() {
             'pastacode_setting_section',
             array(
                 'options' => array(
-                    'prism'          => 'Prism',
-                    'prism-dark'     => 'Dark',
-                    'prism-funky'    => 'Funky',
-                    'prism-coy'      => 'Coy',
-                    'prism-okaidia'  => 'Okaïdia',
-                    'prism-tomorrow' => 'Tomorrow',
-                    'prism-twilight' => 'Twilight',
+                    'shThemeDefault'    => 'Default',
+                    'shThemeDjango'     => 'Django',
+                    'shThemeEclipse'    => 'Eclipse',
+                    'shThemeEmacs'      => 'Emacs',
+                    'shThemeFadeToGrey' => 'FadeToGrey',
+                    'shThemeMDUltra'    => 'MDUltra',
+                    'shThemeMidnight'   => 'Midnight',
+                    'shThemeRDark'      => 'RDark',
                    ),
                 'name' => 'pastacode_style'
             )
