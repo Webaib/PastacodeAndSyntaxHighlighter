@@ -685,7 +685,9 @@ register_activation_hook(__FILE__, 'pastacode_activation');
  */
 function pastacode_activation() {
     add_option('pastacode_cache_duration', DAY_IN_SECONDS * 7);
-    add_option('pastacode_style', 'prism');
+
+    //TODO probably init settings
+    // add_option('pastacode_style', 'prism');
     add_option('pastacode_showinvisible', 'n');
     add_option('pastacode_linenumbers', 'n');
 }
