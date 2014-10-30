@@ -140,11 +140,18 @@ function sc_pastacode($atts, $content = "") {
 		$output = array ();
 		$output[] = '<div class="code-embed-wrapper">';
 		
-		$output[] = '<pre class="brush: ' . $atts['lang'] . '; tab-size: ' 
-		    . $atts['tabSize'] . '">';
-		$output[] = $source['code'] . '</pre>';
+		$brush = 'brush: ' . $atts['lang'] . ';';
+		$tabSize = 'tab-size: ' . $atts['tabSize'] . ';';
+        
+        // Wrap
+        $output = array ();
+        $output[] = '<div class="code-embed-wrapper">';
+        
+        $output[] = '<pre class="' . $brush . $tabSize . '">';
+        $output[] = $source['code'];
+        $output[] = '</pre>';
 		
-		$output[] = '<div class="code-embed-infos">';
+		$output[] = '<div align="right" class="code-embed-infos">';
 
 		if (isset($source['url'])) {
 			$output[] = '<a href="' . esc_url($source['url']) . '" title="' 
