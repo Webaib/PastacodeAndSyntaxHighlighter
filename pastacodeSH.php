@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Pastacode & SH Plugin
+ * Plugin Name: PC&SH
  * Plugin URI:   https://github.com/Webaib/PastacodeAndSyntaxHighlighter
  * Description: Embed GitHub, Gist, Pastebin, Bitbucket or whatever remote files and even your own code by copy/pasting. 
  * Version: 1.3.1.1 
