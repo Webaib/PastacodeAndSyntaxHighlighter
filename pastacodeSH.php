@@ -1,10 +1,12 @@
 <?php
 /**
- * Plugin Name: PC&SH
- * Plugin URI:   https://github.com/Webaib/PastacodeAndSyntaxHighlighter
- * Description: Embed GitHub, Gist, Pastebin, Bitbucket or whatever remote files and even your own code by copy/pasting. 
+ * Plugin Name: PCSH
+ * Plugin URI: https://github.com/Webaib/PastacodeAndSyntaxHighlighter
+ * Description: Insert a code from GitHub, Gist or whatever with SyntaxHighlighter. 
  * Version: 1.3.1.1 
- * Author: Willy Bahuaud Contributors, juliobox, willybahuaud, jpavlov 
+ * Author: Yury Pavlov, Willy Bahuaud, Julio Potier
+ * Author URI: http://www.overscale.net  
+ * Contributors: ypavlov, juliobox, willybahuaud
  */
 
 require_once 'SHLoader.php';
@@ -444,9 +446,9 @@ function pastacode_plugin_row_meta($plugin_meta, $plugin_file) {
         $plugin_meta = array_slice($plugin_meta, 0, -2);
         $a = array();
         $authors = array(
+            array('name'=>'Yury Pavlov', 'url'=>'http://www.overscale.net'),
             array('name'=>'Willy Bahuaud', 'url'=>'http://wabeo.fr'),
-            array('name'=>'Julio Potier', 'url'=>'http://www.boiteaweb.fr'),
-            array('name'=>'Juri Pavlov', 'url'=>'http://www.overscale.net')
+            array('name'=>'Julio Potier', 'url'=>'http://www.boiteaweb.fr')
         );
         
         foreach ($authors as $author) {
