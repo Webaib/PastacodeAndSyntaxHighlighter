@@ -71,8 +71,8 @@ function sc_pastacode($atts, $content = "") {
             'message'       => '',
             'linenumbers'   => 'n',
             'showinvisible' => 'n',
-            'tabSize'       => '4',
-	    	'hlLines'       => ''
+            'tab_size'       => '4',
+	    	'hl_lines'       => ''
 	  ), $atts, 'sc_pastacode'
 	);
 	
@@ -134,8 +134,8 @@ function sc_pastacode($atts, $content = "") {
 		$output[] = '<div class="code-embed-wrapper">';
 		
 		$brush = 'brush:' . $atts['lang'] . ';';
-		$tabSize = 'tab-size:' . $atts['tabSize'] . ';';
-		$hlLines = 'highlight:[' . $atts['hlLines'] . '];';
+		$tabSize = 'tab-size:' . $atts['tab_size'] . ';';
+		$hlLines = 'highlight:[' . $atts['hl_lines'] . '];';
         
         // Wrap
         $output = array ();
@@ -856,7 +856,7 @@ function pastacode_text() {
    				'label'         => __('Tab size', 'pastacode'),
    				'placeholder'   => '1-20',
    				'text'			=> '4',
-   				'name'          => 'tabSize'
+   				'name'          => 'tab_size'
    		),
         'message' => array(
             'classes'       => array('manual'), 
@@ -870,7 +870,7 @@ function pastacode_text() {
              ),
              'label'        => __('Highlited lines', 'pastacode'), 
              'placeholder'  => '1,2,5-6', 
-             'name'         => 'hlLines'
+             'name'         => 'hl_lines'
         )
     );
     
