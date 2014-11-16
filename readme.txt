@@ -1,6 +1,6 @@
 === PastaCode and SyntaxHighlighter ===
 Contributors: willybahuaud, juliobox, webaib
-Tags: embed, code, version, github, bitbucket, gist, prismjs, code, color highlight, syntaxique coloration
+Tags: embed, code, version, github, bitbucket, gist, code, SyntaxHighlighter, color highlight, syntaxique coloration
 Requires at least: 3.1
 Tested up to: 4.0
 Stable tag: trunk

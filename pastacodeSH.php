@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: PC&SH
  * Plugin URI:   https://github.com/Webaib/PastacodeAndSyntaxHighlighter
@@ -31,18 +30,19 @@ function pastacode_load_languages() {
 }
 
 //Register scripts
-add_action('wp_enqueue_scripts', 'pastacode_enqueue_prismjs');
+add_action('wp_enqueue_scripts', 'pastacode_enqueue_SyntaxHighlighterCSS');
 
 /**
  * TBA
  *
  *  @return unknown
  */
-function pastacode_enqueue_prismjs() {
-    wp_register_style(
-        'prismcss',
+function pastacode_enqueue_SyntaxHighlighterCSS() {
+	wp_register_style(
+		'SyntaxHighlighterCSS',
         plugins_url(
-            '/css/' . get_option('pastacode_style', 'prism') . '.css', __FILE__
+            '/css/' . get_option('pastacode_style', 'SyntaxHighlighter') . '.css', 
+            __FILE__
         ),
         false, PASTACODE_VERSION, 'all'
     );
@@ -68,11 +68,11 @@ function sc_pastacode($atts, $content = "") {
             'revision'      => 'master',
             'lines'         => '',
             'lang'          => 'markup',
-            'highlight'     => '',
             'message'       => '',
             'linenumbers'   => 'n',
             'showinvisible' => 'n',
-            'tabSize'       => '4'
+            'tabSize'       => '4',
+	    	'hlLines'       => ''
 	  ), $atts, 'sc_pastacode'
 	);
 	
@@ -114,8 +114,7 @@ function sc_pastacode($atts, $content = "") {
 	
 	if (!empty($source['code'])) {
 		// Load scripts
-		wp_enqueue_style('prismcss');
-		wp_enqueue_script('prismjs');
+		wp_enqueue_style('SyntaxHighlighterCSS');
 		
 		$ln_class = '';
 		if ('y' === get_option('pastacode_linenumbers', 'n')) {
@@ -127,27 +126,22 @@ function sc_pastacode($atts, $content = "") {
 			wp_enqueue_style('prism-show-invisiblecss');
 			wp_enqueue_script('prism-show-invisible');
 		}
-		// highlight
-		if (preg_match('/([0-9-,]+)/', $atts['highlight'])) {
-			$highlight_val = ' data-line="' . $atts['highlight']. '"';
-			wp_enqueue_script('prism-highlight');
-			wp_enqueue_style('prism-highlightcss');
-		} else {
-			$highlight_val = '';
-		}
+		// TODO highlight
+//		if (preg_match('/([0-9-,]+)/', $atts['highlight'])) {
 		
 		// Wrap
 		$output = array ();
 		$output[] = '<div class="code-embed-wrapper">';
 		
-		$brush = 'brush: ' . $atts['lang'] . ';';
-		$tabSize = 'tab-size: ' . $atts['tabSize'] . ';';
+		$brush = 'brush:' . $atts['lang'] . ';';
+		$tabSize = 'tab-size:' . $atts['tabSize'] . ';';
+		$hlLines = 'highlight:[' . $atts['hlLines'] . '];';
         
         // Wrap
         $output = array ();
         $output[] = '<div class="code-embed-wrapper">';
         
-        $output[] = '<pre class="' . $brush . $tabSize . '">';
+        $output[] = '<pre class="' . $brush . $tabSize . $hlLines . '">';
         $output[] = $source['code'];
         $output[] = '</pre>';
 		
@@ -505,9 +499,13 @@ add_action('admin_menu', 'pastacode_create_menu');
  */
 function pastacode_create_menu() {
     add_options_page(
-        'Pastacode '. __('Settings'), 'Pastacode', 'manage_options', 'pastacode',
+        'Pastacode '. __('Settings'), 
+        'Pastacode', 
+        'manage_options', 
+        'pastacode',
         'pastacode_settings_page'
     );
+    
     register_setting('pastacode', 'pastacode_cache_duration');
     register_setting('pastacode', 'pastacode_style');
     register_setting('pastacode', 'pastacode_linenumbers');
@@ -609,49 +607,7 @@ function pastacode_settings_page() {
                    ),
                 'name' => 'pastacode_style'
             )
-        );
-        
-        add_settings_field(
-            'tabSize',
-            __('Tab size', 'pastacode'),
-            'settingCallbackInput',
-            'pastacode',
-            'pastacode_setting_section',
-            array(
-                'name' => 'tabSize'
-            )
-        );
-    
-        add_settings_field(
-            'pastacode_linenumbers',
-            __('Show line numbers', 'pastacode'),
-            'settingCallbackSelect',
-            'pastacode',
-            'pastacode_setting_section',
-            array(
-                'options' => array(
-                    'y' => __('Yes', 'pastacode'),
-                    'n' => __('No', 'pastacode'),
-                   ),
-                'name' => 'pastacode_linenumbers'
-            )
-        );
-    
-        add_settings_field(
-            'pastacode_showinvisible',
-            __('Show invisible chars', 'pastacode'),
-            'settingCallbackSelect',
-            'pastacode',
-            'pastacode_setting_section',
-            array(
-                'options' => array(
-                    'y' => __('Yes', 'pastacode'),
-                    'n' => __('No', 'pastacode'),
-                   ),
-                'name' => 'pastacode_showinvisible'
-            )
-        );
-    
+        );    
         ?>
         
         <form method="post" action="options.php">
@@ -819,7 +775,7 @@ function pastacode_text() {
 
     // Languages
     $langs  = array(
-        'ap'        => 'AppleScript',
+        'applescript'        => 'AppleScript',
         'as3'       => 'ActionScript3',
         'bash'      => 'Bash',
         'cf'        => 'CoffeeScript',
@@ -892,6 +848,16 @@ function pastacode_text() {
             'label'         => __('Code', 'pastacode'), 
             'name'          => 'manual'
         ),
+   		'pastacode-tabsize' => array(
+			'classes' => array(
+   					'github', 'gist', 'bitbucket', 'pastebin', 'file',
+   					'manual'
+			),
+   				'label'         => __('Tab size', 'pastacode'),
+   				'placeholder'   => '1-20',
+   				'text'			=> '4',
+   				'name'          => 'tabSize'
+   		),
         'message' => array(
             'classes'       => array('manual'), 
             'label'         => __('Code title', 'pastacode'),
@@ -904,17 +870,10 @@ function pastacode_text() {
              ),
              'label'        => __('Highlited lines', 'pastacode'), 
              'placeholder'  => '1,2,5-6', 
-             'name'         => 'highlight'
-        ),
-        'pastacode-lines' => array(
-            'classes'       => array(
-                'github', 'gist', 'bitbucket', 'pastebin', 'file'
-            ), 
-            'label'         => __('Visibles lines', 'pastacode'), 
-            'placeholder'   => '1-20', 
-            'name'          => 'lines'
+             'name'         => 'hlLines'
         )
     );
+    
     $fields = apply_filters('pastacode_fields', $fields);
 
     $newFields = array();
@@ -922,6 +881,7 @@ function pastacode_text() {
     foreach ($langs as $k => $s) {
         $newLangs[] = array('text' => $s, 'value' => $k);
     }
+    
     $newFields[] = array(
         'type'      => 'listbox', 
         'label'     => __('Select a syntax', 'pastacode'), 
@@ -936,6 +896,7 @@ function pastacode_text() {
             'type' => 'textbox',
             'name' => $f['name'],
             'label' => $f['label'],
+        	'text' => $f['text'],
             'classes' => 'field-to-test field pastacode-args ' 
                 . implode(' ', $f['classes'])
         );
@@ -955,7 +916,7 @@ function pastacode_text() {
 
     // Print Vars
     $pvars = json_encode($pvars);
-    echo '<script>var pastacodeText = ' . $text . ';var pastacodeVars = ' . $pvars 
-        . ';</script>';
+    echo '<script>var pastacodeText = ' . $text . ';var pastacodeVars = ' 
+		. $pvars . ';</script>';
     
 }
