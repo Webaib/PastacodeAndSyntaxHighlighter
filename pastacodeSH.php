@@ -3,7 +3,7 @@
  * Plugin Name: PCSH
  * Plugin URI: https://github.com/Webaib/PastacodeAndSyntaxHighlighter
  * Description: Insert a code from GitHub, Gist or whatever with SyntaxHighlighter. 
- * Version: 1.3.1.1 
+ * Version: 1.1 
  * Author: Yury Pavlov, Willy Bahuaud, Julio Potier
  * Author URI: http://www.overscale.net  
  * Contributors: ypavlov, juliobox, willybahuaud
@@ -11,46 +11,46 @@
 
 require_once 'SHLoader.php';
 
-const PASTACODE_VERSION = '1.3.1.1';
+const PCSH_VERSION = '1.1';
 
 const INIT_SH = 'initSH';
 
 $shState = array(INIT_SH => false);
 
-add_action('plugins_loaded', 'pastacode_load_languages');
+add_action('plugins_loaded', 'pcsh_load_languages');
 
 /**
  *  TBA
  * 
  *  @return unknown
  */
-function pastacode_load_languages() {
+function pcsh_load_languages() {
     load_plugin_textdomain(
-        'pastacode', 
+        'pcsh', 
         false, dirname(plugin_basename(__FILE__)) . '/languages/'
     ); 
 }
 
 //Register scripts
-add_action('wp_enqueue_scripts', 'pastacode_enqueue_SyntaxHighlighterCSS');
+add_action('wp_enqueue_scripts', 'pcsh_enqueue_SyntaxHighlighterCSS');
 
 /**
  * TBA
  *
  *  @return unknown
  */
-function pastacode_enqueue_SyntaxHighlighterCSS() {
+function pcsh_enqueue_SyntaxHighlighterCSS() {
 	wp_register_style(
 		'SyntaxHighlighterCSS',
         plugins_url(
-            '/css/' . get_option('pastacode_style', 'SyntaxHighlighter') . '.css', 
+            '/css/' . get_option('pcsh_style', 'SyntaxHighlighter') . '.css', 
             __FILE__
         ),
-        false, PASTACODE_VERSION, 'all'
+        false, PCSH_VERSION, 'all'
     );
 }
 
-add_shortcode('pastacode', 'sc_pastacode');
+add_shortcode('pcsh', 'sc_pcsh');
 
 /**
  * TBA
@@ -60,7 +60,7 @@ add_shortcode('pastacode', 'sc_pastacode');
  * 
  * @return multitype:|string
  */
-function sc_pastacode($atts, $content = "") {
+function sc_pcsh($atts, $content = "") {
 	$atts = shortcode_atts(
 	    array (
             'provider'      => '',
@@ -75,16 +75,16 @@ function sc_pastacode($atts, $content = "") {
             'showinvisible' => 'n',
             'tab_size'       => '4',
 	    	'hl_lines'       => ''
-	  ), $atts, 'sc_pastacode'
+	  ), $atts, 'sc_pcsh'
 	);
 	
 	if (empty($atts['provider']) && ! empty($content)) {
         $atts['provider'] = md5($content);
 	}
 	
-    $code_embed_transient = 'pastacode_' . substr(md5(serialize($atts)), 0, 14);
+    $code_embed_transient = 'pcsh_' . substr(md5(serialize($atts)), 0, 14);
 	
-	$time = get_option('pastacode_cache_duration', DAY_IN_SECONDS * 7);
+	$time = get_option('pcsh_cache_duration', DAY_IN_SECONDS * 7);
 	
 	if ($atts['provider'] == 'manual') {
         $time = - 1;
@@ -92,7 +92,7 @@ function sc_pastacode($atts, $content = "") {
     
     if ($time == - 1 || ! $source = get_transient($code_embed_transient)) {
 		$source = apply_filters(
-		    'pastacode_' . $atts['provider'], array (), $atts, $content
+		    'pcsh_' . $atts['provider'], array (), $atts, $content
 		);
 		
 		if (!empty($source['code'])) {
@@ -117,17 +117,6 @@ function sc_pastacode($atts, $content = "") {
 	if (!empty($source['code'])) {
 		// Load scripts
 		wp_enqueue_style('SyntaxHighlighterCSS');
-		
-		$ln_class = '';
-		if ('y' === get_option('pastacode_linenumbers', 'n')) {
-			wp_enqueue_style('prism-linenumbercss');
-			wp_enqueue_script('prism-linenumber');
-			$ln_class = ' line-numbers';
-		}
-		if ('y' === get_option('pastacode_showinvisible', 'n')) {
-			wp_enqueue_style('prism-show-invisiblecss');
-			wp_enqueue_script('prism-show-invisible');
-		}
 		// TODO highlight
 //		if (preg_match('/([0-9-,]+)/', $atts['highlight'])) {
 		
@@ -151,7 +140,7 @@ function sc_pastacode($atts, $content = "") {
 
 		if (isset($source['url'])) {
 			$output[] = '<a href="' . esc_url($source['url']) . '" title="' 
-                . sprintf(esc_attr__('See %s', 'pastacode'), $source['name']) 
+                . sprintf(esc_attr__('See %s', 'pcsh'), $source['name']) 
                 . '" target="_blank" class="code-embed-name">' 
                 . esc_html($source['name']) . '</a>';
 		}
@@ -160,7 +149,7 @@ function sc_pastacode($atts, $content = "") {
 			$output[] = '<a href="' . esc_url($source['raw']) . '" title="' 
 			    . sprintf(esc_attr__('Back to %s'), $source['name']) 
                 . '" class="code-embed-raw" target="_blank">' 
-                . __('view raw', 'pastacode') . '</a>';
+                . __('view raw', 'pcsh') . '</a>';
 		}
 		
 		if (!isset($source['url']) && !isset($source['raw']) 
@@ -179,7 +168,7 @@ function sc_pastacode($atts, $content = "") {
 		
 		return $output;
 	} elseif (!empty($atts['message'])) {
-		return '<span class="pastacode_message">' . esc_html($atts['message']) 
+		return '<span class="pcsh_message">' . esc_html($atts['message']) 
 		  . '</span>';
 	}
 }
@@ -206,7 +195,7 @@ function callSH(array &$atts, array &$output) {
     }
 }
 
-add_filter('pastacode_github', '_pastacode_github', 10, 2);
+add_filter('pcsh_github', '_pcsh_github', 10, 2);
 
 /**
  * TBA
@@ -216,7 +205,7 @@ add_filter('pastacode_github', '_pastacode_github', 10, 2);
  * 
  * @return unknown
  */
-function _pastacode_github($source, $atts) {
+function _pcsh_github($source, $atts) {
     extract($atts);
     if ($user && $repos && $path_id) {
         $b64dcd = 'b'.'a'.'s'.'e'.'6'.'4'.'_'.'d'.'e'.'c'.'o'.'d'.'e';
@@ -257,7 +246,7 @@ function _pastacode_github($source, $atts) {
     return $source;
 }
 
-add_filter('pastacode_gist', '_pastacode_gist', 10, 2);
+add_filter('pcsh_gist', '_pcsh_gist', 10, 2);
 
 /**
  * TBA
@@ -267,7 +256,7 @@ add_filter('pastacode_gist', '_pastacode_gist', 10, 2);
  * 
  * @return unknown
  */
-function _pastacode_gist($source, $atts) {
+function _pcsh_gist($source, $atts) {
     extract($atts);
     if ($path_id) {
         $req  = wp_sprintf('https://api.github.com/gists/%s', $path_id);
@@ -286,7 +275,7 @@ function _pastacode_gist($source, $atts) {
     return $source;
 }
 
-add_filter('pastacode_bitbucket', '_pastacode_bitbucket', 10, 2);
+add_filter('pcsh_bitbucket', '_pcsh_bitbucket', 10, 2);
 
 /**
  * TBA
@@ -296,7 +285,7 @@ add_filter('pastacode_bitbucket', '_pastacode_bitbucket', 10, 2);
  * 
  * @return unknown
  */
-function _pastacode_bitbucket($source, $atts) {
+function _pcsh_bitbucket($source, $atts) {
     extract($atts);
     if ($user && $repos && $path_id) {
         $req  = wp_sprintf(
@@ -319,7 +308,7 @@ function _pastacode_bitbucket($source, $atts) {
     return $source;
 }
 
-add_filter('pastacode_file', '_pastacode_file', 10, 2);
+add_filter('pcsh_file', '_pcsh_file', 10, 2);
 
 /**
  * TBA
@@ -329,7 +318,7 @@ add_filter('pastacode_file', '_pastacode_file', 10, 2);
  * 
  * @return unknown
  */
-function _pastacode_file($source, $atts) {
+function _pcsh_file($source, $atts) {
     extract($atts);
     if ($path_id) {
         $upload_dir = wp_upload_dir();
@@ -347,7 +336,7 @@ function _pastacode_file($source, $atts) {
     return $source;
 }
 
-add_filter('pastacode_pastebin', '_pastacode_pastebin', 10, 2);
+add_filter('pcsh_pastebin', '_pcsh_pastebin', 10, 2);
 
 /**
  * TBA
@@ -357,7 +346,7 @@ add_filter('pastacode_pastebin', '_pastacode_pastebin', 10, 2);
  * 
  * @return unknown
  */
-function _pastacode_pastebin($source, $atts) {
+function _pcsh_pastebin($source, $atts) {
     extract($atts);
     if ($path_id) {
         $req  = wp_sprintf('http://pastebin.com/raw.php?i=%s', $path_id);
@@ -374,7 +363,7 @@ function _pastacode_pastebin($source, $atts) {
     return $source;
 }
 
-add_filter('pastacode_manual', '_pastacode_manual', 10, 3);
+add_filter('pcsh_manual', '_pcsh_manual', 10, 3);
 
 /**
  * TBA
@@ -385,7 +374,7 @@ add_filter('pastacode_manual', '_pastacode_manual', 10, 3);
  * 
  * @return unknown
  */
-function _pastacode_manual($source, $atts, $content) {
+function _pcsh_manual($source, $atts, $content) {
     extract($atts);
     if (!empty($content)) {
         $source['code'] = esc_html(
@@ -407,7 +396,7 @@ function _pastacode_manual($source, $atts, $content) {
 
 add_filter(
     'plugin_action_links_' . plugin_basename(__FILE__),
-    'pastacode_settings_action_links', 10, 2
+    'pcsh_settings_action_links', 10, 2
 );
 
 /**
@@ -418,11 +407,11 @@ add_filter(
  * 
  * @return unknown
  */
-function pastacode_settings_action_links($links, $file) {
+function pcsh_settings_action_links($links, $file) {
     if (current_user_can('manage_options')) {
         array_unshift(
             $links, 
-            '<a href="' . admin_url('options-general.php?page=pastacode') . '">' 
+            '<a href="' . admin_url('options-general.php?page=pcsh') . '">' 
             . __('Settings') . '</a>'
         );
     }
@@ -430,7 +419,7 @@ function pastacode_settings_action_links($links, $file) {
     return $links;
 }
 
-add_filter('plugin_row_meta', 'pastacode_plugin_row_meta', 10, 2);
+add_filter('plugin_row_meta', 'pcsh_plugin_row_meta', 10, 2);
 
 /**
  * TBA
@@ -440,7 +429,7 @@ add_filter('plugin_row_meta', 'pastacode_plugin_row_meta', 10, 2);
  * 
  * @return mixed
  */
-function pastacode_plugin_row_meta($plugin_meta, $plugin_file) {
+function pcsh_plugin_row_meta($plugin_meta, $plugin_file) {
     if (plugin_basename(__FILE__) == $plugin_file) {
         $last = end($plugin_meta);
         $plugin_meta = array_slice($plugin_meta, 0, -2);
@@ -466,7 +455,7 @@ function pastacode_plugin_row_meta($plugin_meta, $plugin_file) {
 }
 
 add_filter(
-    'admin_post_pastacode_drop_transients', 'pastacode_drop_transients', 10, 2
+    'admin_post_pcsh_drop_transients', 'pcsh_drop_transients', 10, 2
 );
 
 /**
@@ -474,14 +463,14 @@ add_filter(
  * 
  * @return unknown
  */
-function pastacode_drop_transients() {
+function pcsh_drop_transients() {
     if (isset($_GET['_wpnonce']) 
-        && wp_verify_nonce($_GET['_wpnonce'], 'pastacode_drop_transients')
+        && wp_verify_nonce($_GET['_wpnonce'], 'pcsh_drop_transients')
     ) {
         global $wpdb;
         $wpdb->query(
             "DELETE FROM $wpdb->options WHERE option_name" 
-            . " LIKE '_transient_pastacode_%'"
+            . " LIKE '_transient_pcsh_%'"
         );
         wp_redirect(wp_get_referer());
     } else {
@@ -492,26 +481,24 @@ function pastacode_drop_transients() {
 /**
 //Admin Settings
 */
-add_action('admin_menu', 'pastacode_create_menu');
+add_action('admin_menu', 'pcsh_create_menu');
 
 /**
  * TBA
  * 
  * @return unknown
  */
-function pastacode_create_menu() {
+function pcsh_create_menu() {
     add_options_page(
-        'Pastacode '. __('Settings'), 
-        'Pastacode', 
+        'PCSH '. __('Settings'), 
+        'PCSH', 
         'manage_options', 
-        'pastacode',
-        'pastacode_settings_page'
+        'pcsh',
+        'pcsh_settings_page'
     );
     
-    register_setting('pastacode', 'pastacode_cache_duration');
-    register_setting('pastacode', 'pastacode_style');
-    register_setting('pastacode', 'pastacode_linenumbers');
-    register_setting('pastacode', 'pastacode_showinvisible');
+    register_setting('pcsh', 'pcsh_cache_duration');
+    register_setting('pcsh', 'pcsh_style');
 }
 
 /**
@@ -557,45 +544,45 @@ function settingCallbackInput($args) {
  * 
  * @return unknown
  */
-function pastacode_settings_page() {
+function pcsh_settings_page() {
     ?>
     <div class="wrap">
         <?php screen_icon(); ?>
-        <h2>Pastacode-SyntaxHighlighter v<?php echo PASTACODE_VERSION; ?></h2>
+        <h2>Pastacode and SyntaxHighlighter v<?php echo PCSH_VERSION; ?></h2>
     
         <?php 
         add_settings_section(
-            'pastacode_setting_section', __('General Settings', 'pastacode'),
+            'pcsh_setting_section', __('General Settings', 'pcsh'),
             '__return_false',
-            'pastacode'
+            'pcsh'
         );
     
         add_settings_field(
-            'pastacode_cache_duration',
-            __('Caching duration', 'pastacode'),
+            'pcsh_cache_duration',
+            __('Caching duration', 'pcsh'),
             'settingCallbackSelect',
-            'pastacode',
-            'pastacode_setting_section',
+            'pcsh',
+            'pcsh_setting_section',
             array(
                 'options' => array(
                     HOUR_IN_SECONDS      => sprintf(__('%s hour'), '1'),
                     HOUR_IN_SECONDS * 12 => __('Twice Daily'),
                     DAY_IN_SECONDS       => __('Once Daily'),
-                    DAY_IN_SECONDS * 7   => __('Once Weekly', 'pastacode'),
-                    0                    => __('Never reload', 'pastacode'),
-                    -1                   => __('No cache (dev mode)', 'pastacode'),
+                    DAY_IN_SECONDS * 7   => __('Once Weekly', 'pcsh'),
+                    0                    => __('Never reload', 'pcsh'),
+                    -1                   => __('No cache (dev mode)', 'pcsh'),
                    ),
-                'name' => 'pastacode_cache_duration'
+                'name' => 'pcsh_cache_duration'
             )
         );
     
         //TODO
         add_settings_field(
-            'pastacode_style',
-            __('Syntax Coloration Style', 'pastacode'),
+            'pcsh_style',
+            __('Syntax Coloration Style', 'pcsh'),
             'settingCallbackSelect',
-            'pastacode',
-            'pastacode_setting_section',
+            'pcsh',
+            'pcsh_setting_section',
             array(
                 'options' => array(
                     'shThemeDefault'    => 'Default',
@@ -607,32 +594,32 @@ function pastacode_settings_page() {
                     'shThemeMidnight'   => 'Midnight',
                     'shThemeRDark'      => 'RDark',
                    ),
-                'name' => 'pastacode_style'
+                'name' => 'pcsh_style'
             )
         );    
         ?>
         
         <form method="post" action="options.php">
             <?php 
-                settings_fields('pastacode');
-                do_settings_sections('pastacode');
+                settings_fields('pcsh');
+                do_settings_sections('pcsh');
                 $url = wp_nonce_url(
-                    admin_url('admin-post.php?action=pastacode_drop_transients'), 
-                    'pastacode_drop_transients'
+                    admin_url('admin-post.php?action=pcsh_drop_transients'), 
+                    'pcsh_drop_transients'
                 );
                 
                 global $wpdb;
                 
                 $transients = $wpdb->get_var(
                     "SELECT count(option_name) FROM $wpdb->options" 
-                    . " WHERE option_name LIKE '_transient_pastacode_%'"
+                    . " WHERE option_name LIKE '_transient_pcsh_%'"
                 );
                 
                 echo '<p class="submit">';
                     submit_button('', 'primary large', 'submit', false);
                     echo ' <a href="' . $url 
                         . '" class="button button-large button-secondary">'
-                        . __('Purge cache', 'pastacode') . ' (' . (int)$transients 
+                        . __('Purge cache', 'pcsh') . ' (' . (int)$transients 
                         . ')</a>';
                 echo '</p>';
             ?>
@@ -641,54 +628,50 @@ function pastacode_settings_page() {
     <?php
 }
 
-register_activation_hook(__FILE__, 'pastacode_activation');
+register_activation_hook(__FILE__, 'pcsh_activation');
 
 /**
  * TBA
  * 
  * @return unknown 
  */
-function pastacode_activation() {
-    add_option('pastacode_cache_duration', DAY_IN_SECONDS * 7);
-
-    //TODO probably init settings
-    // add_option('pastacode_style', 'prism');
-    add_option('pastacode_showinvisible', 'n');
-    add_option('pastacode_linenumbers', 'n');
+function pcsh_activation() {
+    add_option('pcsh_cache_duration', DAY_IN_SECONDS * 7);
+    add_option('pcsh_style', 'Default');
 }
 
-register_uninstall_hook(__FILE__, 'pastacode_uninstaller');
+register_uninstall_hook(__FILE__, 'pcsh_uninstaller');
 
 /**
  * TBA
  * 
  * @return unknown
  */
-function pastacode_uninstaller() {
-    delete_option('pastacode_cache_duration');
-    delete_option('pastacode_style');
+function pcsh_uninstaller() {
+    delete_option('pcsh_cache_duration');
+    delete_option('pcsh_style');
 }
 
 /**
 Add button to tinymce
 */
 //Button
-add_action('admin_init', 'pastacode_button_editor');
+add_action('admin_init', 'pcsh_button_editor');
 
 /**
  * TBA
  * 
  * @return boolean
  */
-function pastacode_button_editor() {
+function pcsh_button_editor() {
     // Don't bother doing this stuff if the current user lacks permissions
     if (!current_user_can('edit_posts') && !current_user_can('edit_pages')) {
         return false;
     }
 
     if (get_user_option('rich_editing') == 'true') {
-        add_filter('mce_external_plugins', 'pastacode_script_tiny');
-        add_filter('mce_buttons', 'pastacode_register_button');
+        add_filter('mce_external_plugins', 'pcsh_script_tiny');
+        add_filter('mce_buttons', 'pcsh_register_button');
     }
 }
 
@@ -699,7 +682,7 @@ function pastacode_button_editor() {
  * 
  * @return unknown
  */
-function pastacode_register_button($buttons) {
+function pcsh_register_button($buttons) {
     array_push($buttons, "|", "pcb");
     
     return $buttons;
@@ -712,68 +695,68 @@ function pastacode_register_button($buttons) {
  * 
  * @return unknown
  */
-function pastacode_script_tiny($plugin_array) {
+function pcsh_script_tiny($plugin_array) {
     $plugin_array['pcb'] = plugins_url('/js/tinymce.js', __FILE__);
     
     return $plugin_array;
 }
 
-add_action('admin_enqueue_scripts', 'pastacode_shortcodes_mce_css');
+add_action('admin_enqueue_scripts', 'pcsh_shortcodes_mce_css');
 
 /**
  * TBA
  * 
  * @return unknown
  */
-function pastacode_shortcodes_mce_css() {
+function pcsh_shortcodes_mce_css() {
     wp_enqueue_style(
-        'pastacode-shortcode', plugins_url('/css/pastacode-tinymce.css', __FILE__)
+        'pcsh-shortcode', plugins_url('/css/pcsh-tinymce.css', __FILE__)
     );
 }
 
-add_action('admin_init', 'add_pastacode_styles_to_editor');
+add_action('admin_init', 'add_pcsh_styles_to_editor');
 
 /**
  * TBA
  * 
  * @return unknown
  */
-function add_pastacode_styles_to_editor() {
+function add_pcsh_styles_to_editor() {
     global $editor_styles;
-    $editor_styles[] = plugins_url('/css/pastacode-tinymce.css', __FILE__);
+    $editor_styles[] = plugins_url('/css/pcsh-tinymce.css', __FILE__);
 }
 
-add_action('before_wp_tiny_mce', 'pastacode_text');
+add_action('before_wp_tiny_mce', 'pcsh_text');
 
 /**
  * TBA
  * 
  * @return unknown
  */
-function pastacode_text() {
+function pcsh_text() {
     // I10n
     $text = json_encode(
         array(
-            'window-title' => __('Past\'a code', 'pastacode'),
-            'label-provider' => __('Select a provider', 'pastacode'),
-            'label-langs' => __('Select a syntax', 'pastacode'),
+            'window-title' => __('Past\'a code', 'pcsh'),
+            'label-provider' => __('Select a provider', 'pcsh'),
+            'label-langs' => __('Select a syntax', 'pcsh'),
             'image-placeholder' => plugins_url(
-                '/images/pastacode-placeholder.png', __FILE__
+                '/images/pcsh-placeholder.png', __FILE__
             )
         )
     );
 
     // Services
     $services = array(
-                    'manual' => __('Manual', 'pastacode'),
+                    'manual' => __('Manual', 'pcsh'),
                     'github'    => 'Github',
                     'gist'      => 'Gist',
                     'bitbucket' => 'Bitbucket',
                     'pastebin'  => 'Pastebin',
-                    'file'      => __('File from uploads', 'pastacode')
+                    'file'      => __('File from uploads', 'pcsh')
     );
 
-    $services = apply_filters('pastacode_services', $services);
+    $services = apply_filters('pcsh_services', $services);
 
     // Languages
     $langs  = array(
@@ -802,38 +785,38 @@ function pastacode_text() {
         'vb'        => 'VisualBasic',
         'xml'       => 'XML'
     );
-    $langs = apply_filters('pastacode_langs', $langs);
+    $langs = apply_filters('pcsh_langs', $langs);
     
     // Other fields
     $fields = array(
         'username' => array(
             'classes'       => array('github','bitbucket'),
-            'label'         => __('User of repository', 'pastacode'), 
-            'placeholder'   => __('John Doe', 'pastacode'), 
+            'label'         => __('User of repository', 'pcsh'), 
+            'placeholder'   => __('John Doe', 'pcsh'), 
             'name'          => 'user'
         ),
         'repository' => array(
             'classes'       => array('github','bitbucket'), 
-            'label'         => __('Repository', 'pastacode'), 
-            'placeholder'   => __('pastacode', 'pastacode'), 
+            'label'         => __('Repository', 'pcsh'), 
+            'placeholder'   => __('pcsh', 'pcsh'), 
             'name'          => 'repos'
         ),
         'path-id' => array(
             'classes'       => array('gist','pastebin'), 
-            'label'         => __('Code ID', 'pastacode'), 
+            'label'         => __('Code ID', 'pcsh'), 
             'placeholder'   => '123456', 
             'name'          => 'path_id'
         ),
         'path-repo' => array(
             'classes'       => array('github','bitbucket'), 
-            'label'         => __('File path inside the repository', 'pastacode'), 
+            'label'         => __('File path inside the repository', 'pcsh'), 
             'placeholder'   => __('bin/foobar.php', 'pastebin'), 
             'name'          => 'path_id'
         ),
         'path-up' => array(
             'classes'       => array('file'), 
             'label'         => sprintf(
-                __('File path relative to %s', 'pastacode'), 
+                __('File path relative to %s', 'pcsh'), 
                 esc_html(WP_CONTENT_URL)
             ), 
             'placeholder'   => date('Y/m').'/source.txt', 
@@ -841,42 +824,42 @@ function pastacode_text() {
         ),
         'revision' => array(
             'classes'       => array('github','bitbucket'),
-            'label'         => __('Revision', 'pastacode'),
-            'placeholder'   => __('master', 'pastacode'), 
+            'label'         => __('Revision', 'pcsh'),
+            'placeholder'   => __('master', 'pcsh'), 
             'name'          => 'revision'
         ),
         'manual' => array(
             'classes'       => array('manual'), 
-            'label'         => __('Code', 'pastacode'), 
+            'label'         => __('Code', 'pcsh'), 
             'name'          => 'manual'
         ),
-   		'pastacode-tabsize' => array(
+   		'pcsh-tabsize' => array(
 			'classes' => array(
    					'github', 'gist', 'bitbucket', 'pastebin', 'file',
    					'manual'
 			),
-   				'label'         => __('Tab size', 'pastacode'),
+   				'label'         => __('Tab size', 'pcsh'),
    				'placeholder'   => '1-20',
    				'text'			=> '4',
    				'name'          => 'tab_size'
    		),
         'message' => array(
             'classes'       => array('manual'), 
-            'label'         => __('Code title', 'pastacode'),
-            'placeholder'   => __('title', 'pastacode'),
+            'label'         => __('Code title', 'pcsh'),
+            'placeholder'   => __('title', 'pcsh'),
             'name'          => 'message'
         ),
-        'pastacode-highlight' => array(
+        'pcsh-highlight' => array(
             'classes'       => array(
                 'manual', 'github', 'gist', 'bitbucket', 'pastebin', 'file'
              ),
-             'label'        => __('Highlited lines', 'pastacode'), 
+             'label'        => __('Highlited lines', 'pcsh'), 
              'placeholder'  => '1,2,5-6', 
              'name'         => 'hl_lines'
         )
     );
     
-    $fields = apply_filters('pastacode_fields', $fields);
+    $fields = apply_filters('pcsh_fields', $fields);
 
     $newFields = array();
     $newLangs = array();
@@ -886,7 +869,7 @@ function pastacode_text() {
     
     $newFields[] = array(
         'type'      => 'listbox', 
-        'label'     => __('Select a syntax', 'pastacode'), 
+        'label'     => __('Select a syntax', 'pcsh'), 
         'name'      => 'lang', 
         'values'    => $newLangs
     );
@@ -899,7 +882,7 @@ function pastacode_text() {
             'name' => $f['name'],
             'label' => $f['label'],
         	'text' => $f['text'],
-            'classes' => 'field-to-test field pastacode-args ' 
+            'classes' => 'field-to-test field pcsh-args ' 
                 . implode(' ', $f['classes'])
         );
 
@@ -918,7 +901,7 @@ function pastacode_text() {
 
     // Print Vars
     $pvars = json_encode($pvars);
-    echo '<script>var pastacodeText = ' . $text . ';var pastacodeVars = ' 
+    echo '<script>var pcshText = ' . $text . ';var pcshVars = ' 
 		. $pvars . ';</script>';
     
 }

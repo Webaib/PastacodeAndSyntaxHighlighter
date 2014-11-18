@@ -1,5 +1,5 @@
 i.mce-i-pcb-icon {
-    background-image: url('../images/pastacode_logo.png');
+    background-image: url('../images/pcsh_logo.png');
 }
 
 .pasta-item{
@@ -26,11 +26,11 @@ i.mce-i-pcb-icon {
     display:none;
 }
 
-.wp-pastacode-selected{
+.wp-pcsh-selected{
     background-color:#eee;
 }
 
-.wp-pastacode-selected .dashicons{
+.wp-pcsh-selected .dashicons{
     display:block;
     color:#FFF;
     background:#000;
@@ -45,11 +45,11 @@ i.mce-i-pcb-icon {
     z-index:2;
 }
 
-.wp-pastacode-selected .dashicons:hover{
+.wp-pcsh-selected .dashicons:hover{
     background:#44A5DD;
 }
 
-.pastacode-shortcode-title{
+.pcsh-shortcode-title{
     display: block;
     clear: both;
     text-align: center;

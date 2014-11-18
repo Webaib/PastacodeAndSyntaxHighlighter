@@ -1,4 +1,4 @@
-=== PastaCode and SyntaxHighlighter ===
+=== PCSH (PastaCode and SyntaxHighlighter) ===
 Contributors: willybahuaud, juliobox, webaib
 Tags: embed, code, version, github, bitbucket, gist, code, SyntaxHighlighter, color highlight, syntaxique coloration
 Requires at least: 3.1

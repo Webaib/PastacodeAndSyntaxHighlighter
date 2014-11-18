@@ -32,21 +32,21 @@
 	function theFunction(key, editor, pvars) {
 		fn = function() {
 			editor.windowManager.open({
-				title : pastacodeText['window-title'] + ' - ' + pvars[key],
-				body : fields(key, pastacodeVars['fields']),
+				title : pcshText['window-title'] + ' - ' + pvars[key],
+				body : fields(key, pcshVars['fields']),
 				onsubmit : function(e) {
 					var out = '';
 					if (e.data['provider'] == 'manual') {
 						var manual = e.data.manual;
 						delete e.data.manual;
-						out += '[pastacode';
+						out += '[pcsh';
 						for ( var attr in e.data) {
 							out += ' ' + attr + '="' + e.data[attr] + '"';
 						}
-						out += ']<pre><code>' + pastacode_esc_html(manual)
-								+ '</code></pre>[/pastacode]';
+						out += ']<pre><code>' + pcsh_esc_html(manual)
+								+ '</code></pre>[/pcsh]';
 					} else {
-						out += '[pastacode';
+						out += '[pcsh';
 						for ( var attr in e.data) {
 							out += ' ' + attr + '="' + e.data[attr] + '"';
 						}
@@ -71,7 +71,7 @@
 		return providers;
 	}
 
-	function pastacode_esc_html(str) {
+	function pcsh_esc_html(str) {
 		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
 				.replace(/>/g, '&gt;').replace(/"/g, '&#34;').replace(/'/g,
 						'&#039;');
@@ -82,18 +82,18 @@
 		editor.addButton('pcb', {
 			icon : 'pcb-icon',
 			type : 'menubutton',
-			menu : providers(editor, pastacodeVars['providers'])
+			menu : providers(editor, pcshVars['providers'])
 		});
 
 		// Replace shortcode
 		editor.on('BeforeSetContent', function(event) {
-			event.content = replacePastacodeShortcodes(event.content);
+			event.content = replacePCSHShortcodes(event.content);
 		});
 
 		// Restore shortcode
 		editor.on('PostProcess', function(event) {
 			if (event.get) {
-				event.content = restorePastacodeShortcodes(event.content);
+				event.content = restorePCSHShortcodes(event.content);
 			}
 		});
 
@@ -105,49 +105,49 @@
 
 							function unselect() {
 								dom.removeClass(dom
-										.select('div.wp-pastacode-selected'),
-										'wp-pastacode-selected');
+										.select('div.wp-pcsh-selected'),
+										'wp-pcsh-selected');
 							}
 
 							if ((node.nodeName === 'DIV' && dom.getAttrib(node,
-									'data-wp-pastacode'))
+									'data-wp-pcsh'))
 									|| (node.nodeName === 'SPAN' && dom
 											.getAttrib(dom.getParents(node)[1],
-													'data-wp-pastacode'))) {
+													'data-wp-pcsh'))) {
 								// Don't trigger on right-click
 								if (event.button !== 2) {
 									if (dom.hasClass(node,
-											'wp-pastacode-selected')
+											'wp-pcsh-selected')
 											|| dom.hasClass(dom
 													.getParents(node)[1],
-													'wp-pastacode-selected')) {
+													'wp-pcsh-selected')) {
 										if (node.nodeName === 'DIV')
-											editPastacode(node, editor);
+											editPCSH(node, editor);
 										if (node.nodeName === 'SPAN')
-											editPastacode(
+											editPCSH(
 													dom.getParents(node)[1],
 													editor);
 									} else {
 										unselect();
 										if (node.nodeName === 'DIV')
 											dom.addClass(node,
-													'wp-pastacode-selected');
+													'wp-pcsh-selected');
 										if (node.nodeName === 'SPAN')
 											dom.addClass(
 													dom.getParents(node)[1],
-													'wp-pastacode-selected');
+													'wp-pcsh-selected');
 									}
 								}
 							} else {
 								if (node.nodeName === 'BUTTON'
 										&& dom.hasClass(
 												dom.getParents(node)[1],
-												'wp-pastacode-selected')
+												'wp-pcsh-selected')
 										&& event.button !== 2) { //
 									if (dom.hasClass(node, 'remove')) {
 										dom.remove(dom.getParents(node)[1]);
 									} else {
-										editPastacode(dom.getParents(node)[1],
+										editPCSH(dom.getParents(node)[1],
 												editor);
 									}
 								} else {
@@ -160,16 +160,16 @@
 	var styleDiv = ' contenteditable="false"';
 
 	// Replace shortcode
-	function replacePastacodeShortcodes(content) {
-		var pastacodeShortcodeRegex = new RegExp(
-				'\\[(\\[?)(pastacode)(?![\\w-])([^\\]\\/]*(?:\\/(?!\\])[^\\]\\/]*)*?)(?:(\\/)\\]|\\](?:([^\\[]*(?:\\[(?!\\/\\2\\])[^\\[]*)*)(\\[\\/\\2\\]))?)(\\]?)',
+	function replacePCSHShortcodes(content) {
+		var pcshShortcodeRegex = new RegExp(
+				'\\[(\\[?)(pcsh)(?![\\w-])([^\\]\\/]*(?:\\/(?!\\])[^\\]\\/]*)*?)(?:(\\/)\\]|\\](?:([^\\[]*(?:\\[(?!\\/\\2\\])[^\\[]*)*)(\\[\\/\\2\\]))?)(\\]?)',
 				'g');
-		return content.replace(pastacodeShortcodeRegex, function(match) {
-			return htmlPastacode('wp-pastacode', match);
+		return content.replace(pcshShortcodeRegex, function(match) {
+			return htmlPCSH('wp-pcsh', match);
 		});
 	}
 
-	function htmlPastacode(cls, data) {
+	function htmlPCSH(cls, data) {
 		switch (getAttr(data, 'provider')) {
 		case 'manual':
 			var titre = getAttr(data, 'message');
@@ -182,25 +182,25 @@
 			titre += ' (' + l + ')';
 		data = window.encodeURIComponent(data);
 		return '<div style="background-image:url('
-				+ pastacodeText['image-placeholder']
+				+ pcshText['image-placeholder']
 				+ ');" '
 				+ styleDiv
 				+ ' class="pasta-item wp-media mceItem '
 				+ cls
 				+ '" '
-				+ 'data-wp-pastacode="'
+				+ 'data-wp-pcsh="'
 				+ data
-				+ '" data-mce-resize="false" data-mce-placeholder="1" ><button class="dashicons dashicons-edit edit">x</button><button class="dashicons dashicons-no-alt remove">x</button><span class="pastacode-shortcode-title">'
+				+ '" data-mce-resize="false" data-mce-placeholder="1" ><button class="dashicons dashicons-edit edit">x</button><button class="dashicons dashicons-no-alt remove">x</button><span class="pcsh-shortcode-title">'
 				+ titre + '</span></div>';
 	}
 
 	// Restore shortcode
-	function restorePastacodeShortcodes(content) {
+	function restorePCSHShortcodes(content) {
 
 		return content.replace(
 				/(?:<p(?: [^>]+)?>)*(<div [^>]+>)(.*?)<\/div>(?:<\/p>)*/g,
 				function(match, image) {
-					var data = getAttr(image, 'data-wp-pastacode');
+					var data = getAttr(image, 'data-wp-pcsh');
 
 					if (data) {
 						return '<p>' + data + '</p>';
@@ -223,7 +223,7 @@
 	}
 
 	// Edit shortcode
-	function editPastacode(node, editor) {
+	function editPCSH(node, editor) {
 		var gallery, frame, data;
 
 		if (node.nodeName !== 'DIV') {
@@ -231,48 +231,48 @@
 		}
 
 		data = window.decodeURIComponent(editor.dom.getAttrib(node,
-				'data-wp-pastacode'));
+				'data-wp-pcsh'));
 
 		// Make sure we've selected a Pastacode node.
-		if (editor.dom.hasClass(node, 'wp-pastacode')) {
+		if (editor.dom.hasClass(node, 'wp-pcsh')) {
 			var provider = getAttr(data, 'provider');
 			var values = [];
-			for ( var field in pastacodeVars['fields']) {
-				if (pastacodeVars['fields'][field].name == 'manual') {
+			for ( var field in pcshVars['fields']) {
+				if (pcshVars['fields'][field].name == 'manual') {
 					values[field] = getShortcodeContent(data);
 				} else {
 					values[field] = getAttr(data,
-							pastacodeVars['fields'][field].name);
+							pcshVars['fields'][field].name);
 				}
 			}
 
-			var fn = theFunction(provider, editor, pastacodeVars['providers'],
+			var fn = theFunction(provider, editor, pcshVars['providers'],
 					values);
 
 			editor.windowManager.open({
-				title : pastacodeText['window-title'] + ' - '
-						+ pastacodeVars['providers'][provider],
-				body : fields(provider, pastacodeVars['fields'], values),
+				title : pcshText['window-title'] + ' - '
+						+ pcshVars['providers'][provider],
+				body : fields(provider, pcshVars['fields'], values),
 				onsubmit : function(e) {
 					var out = '';
 					if (e.data['provider'] == 'manual') {
-						var manual = pastacode_esc_html(e.data.manual);
+						var manual = pcsh_esc_html(e.data.manual);
 						delete e.data.manual
-						out += '[pastacode';
+						out += '[pcsh';
 						for ( var attr in e.data) {
 							out += ' ' + attr + '="' + e.data[attr] + '"';
 						}
 						out += ']<pre><code>' + manual
-								+ '</code></pre>[/pastacode]';
+								+ '</code></pre>[/pcsh]';
 					} else {
-						out += '[pastacode';
+						out += '[pcsh';
 						for ( var attr in e.data) {
 							out += ' ' + attr + '="' + e.data[attr] + '"';
 						}
 						out += '/]';
 					}
 					var newNode = editor.dom
-							.createFragment(replacePastacodeShortcodes(out));
+							.createFragment(replacePCSHShortcodes(out));
 					editor.dom.replace(newNode, node);
 				}
 			});

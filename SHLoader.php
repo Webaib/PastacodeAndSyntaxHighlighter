@@ -45,7 +45,7 @@ class SHLoader {
      * @return void
      */
     public function initSH(array &$output) {
-        $ver = constant('PASTACODE_VERSION');
+        $ver = constant('PCSH_VERSION');
         
         $output[] = '<script type="text/javascript" src="'
             . plugins_url('/js/shCore.js?ver=' . $ver, __FILE__) . '"></script>';
@@ -66,7 +66,7 @@ class SHLoader {
      * @return void
      */ 
     public function initSHLang($lang, array &$output) {
-        $ver = constant('PASTACODE_VERSION');
+        $ver = constant('PCSH_VERSION');
         
         $output[] = '<script type="text/javascript" src="' 
             . plugins_url($this->brushMap[$lang] . '?ver=' . $ver, __FILE__) 
