@@ -637,7 +637,6 @@ register_activation_hook(__FILE__, 'pcsh_activation');
  */
 function pcsh_activation() {
     add_option('pcsh_cache_duration', DAY_IN_SECONDS * 7);
-    add_option('pcsh_style', 'Default');
 }
 
 register_uninstall_hook(__FILE__, 'pcsh_uninstaller');
