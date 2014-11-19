@@ -3,7 +3,7 @@
  * Plugin Name: PCSH
  * Plugin URI: https://github.com/Webaib/PastacodeAndSyntaxHighlighter
  * Description: Insert a code from GitHub, Gist or whatever with SyntaxHighlighter. 
- * Version: 1.1 
+ * Version: 0.1 
  * Author: Yury Pavlov, Willy Bahuaud, Julio Potier
  * Author URI: http://www.overscale.net  
  * Contributors: ypavlov, juliobox, willybahuaud
@@ -11,7 +11,7 @@
 
 require_once 'SHLoader.php';
 
-const PCSH_VERSION = '1.1';
+const PCSH_VERSION = '0.1';
 
 const INIT_SH = 'initSH';
 
@@ -637,6 +637,7 @@ register_activation_hook(__FILE__, 'pcsh_activation');
  */
 function pcsh_activation() {
     add_option('pcsh_cache_duration', DAY_IN_SECONDS * 7);
+    add_option('pcsh_style', 'shCoreDefault');
 }
 
 register_uninstall_hook(__FILE__, 'pcsh_uninstaller');
@@ -853,7 +854,7 @@ function pcsh_text() {
                 'manual', 'github', 'gist', 'bitbucket', 'pastebin', 'file'
              ),
              'label'        => __('Highlited lines', 'pcsh'), 
-             'placeholder'  => '1,2,5-6', 
+             'placeholder'  => '1,2,3,6', 
              'name'         => 'hl_lines'
         )
     );
