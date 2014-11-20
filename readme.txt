@@ -3,7 +3,7 @@ Contributors: webaib, willybahuaud, juliobox
 Tags: embed, code, version, github, bitbucket, gist, code, SyntaxHighlighter, color highlight, syntaxique coloration
 Requires at least: 3.1
 Tested up to: 4.0
-Stable tag: 0.1
+Stable tag: 0.2
 License: GPLv2 or later
 
 Use PCSH to add code into your posts with the awesome SyntaxHighlighter plugin. So, past'a code!
@@ -21,30 +21,30 @@ PCSH allows to enhance your snippets using SyntaxHighlighter plugins (highlightn
 
 Available programming languages:
 
-'AppleScript',
-'ActionScript3',
-'Bash',
-'CoffeeScript',
-'C++',
-'C#',
-'CSS',
-'Pascal',
-'Diff',
-'Erlang',
-'Groovy',
-'Haxe',
-'Java',
-'JavaFX',
-'JavaScript',
-'Perl',
-'PHP',
-'Plain',
-'Python',
-'Ruby',
-'Scala',
-'SQL',
-'VisualBasic',
-'XML'
+* AppleScript
+* ActionScript3
+* Bash
+* CoffeeScript
+* C++
+* C#
+* CSS
+* Pascal
+* Diff
+* Erlang
+* Groovy
+* Haxe
+* Java
+* JavaFX
+* JavaScript
+* Perl
+* PHP
+* Plain
+* Python
+* Ruby
+* Scala
+* SQL
+* VisualBasic
+* XML
 
 
 == Installation ==
@@ -154,6 +154,10 @@ Do not add you root website!! A contributor can add the shortcode to point your 
 9. *RDark* color scheme
 
 == Changelog ==
+= 0.2 =
+* 20 November 2014
+* Add russian translation
+
 = 0.1 =
 * 19 November 2014
 * Prism replaced by SyntaxHighlighter
