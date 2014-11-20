@@ -4,9 +4,10 @@
  * Plugin URI: https://github.com/Webaib/PastacodeAndSyntaxHighlighter
  * Description: Insert a code from GitHub, Gist or whatever with SyntaxHighlighter. 
  * Version: 0.1 
+ * Text Domain: pcsh
  * Author: Yury Pavlov, Willy Bahuaud, Julio Potier
  * Author URI: http://www.overscale.net  
- * Contributors: ypavlov, juliobox, willybahuaud
+ * Contributors: webaib, willybahuaud, juliobox
  */
 
 require_once 'SHLoader.php';
