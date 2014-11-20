@@ -1,0 +1,158 @@
+# Copyright (C) 2014 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version:  \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/pcsh-pastacode-"
+"syntaxhighlighter\n"
+"POT-Creation-Date: 2014-11-20 09:31:48+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2014-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: pastacodeSH.php:143
+msgid "See %s"
+msgstr ""
+
+#: pastacodeSH.php:150
+msgid "Back to %s"
+msgstr ""
+
+#: pastacodeSH.php:152
+msgid "view raw"
+msgstr ""
+
+#: pastacodeSH.php:415 pastacodeSH.php:493
+msgid "Settings"
+msgstr ""
+
+#: pastacodeSH.php:445
+msgid "Visit author homepage"
+msgstr ""
+
+#: pastacodeSH.php:449
+msgid "By %s"
+msgstr ""
+
+#: pastacodeSH.php:555
+msgid "General Settings"
+msgstr ""
+
+#: pastacodeSH.php:562
+msgid "Caching duration"
+msgstr ""
+
+#: pastacodeSH.php:568
+msgid "%s hour"
+msgstr ""
+
+#: pastacodeSH.php:569
+msgid "Twice Daily"
+msgstr ""
+
+#: pastacodeSH.php:570
+msgid "Once Daily"
+msgstr ""
+
+#: pastacodeSH.php:571
+msgid "Once Weekly"
+msgstr ""
+
+#: pastacodeSH.php:572
+msgid "Never reload"
+msgstr ""
+
+#: pastacodeSH.php:573
+msgid "No cache (dev mode)"
+msgstr ""
+
+#: pastacodeSH.php:582
+msgid "Syntax Coloration Style"
+msgstr ""
+
+#: pastacodeSH.php:622
+msgid "Purge cache"
+msgstr ""
+
+#: pastacodeSH.php:740
+msgid "Past'a code"
+msgstr ""
+
+#: pastacodeSH.php:741
+msgid "Select a provider"
+msgstr ""
+
+#: pastacodeSH.php:742 pastacodeSH.php:872
+msgid "Select a syntax"
+msgstr ""
+
+#: pastacodeSH.php:751
+msgid "Manual"
+msgstr ""
+
+#: pastacodeSH.php:756
+msgid "File from uploads"
+msgstr ""
+
+#: pastacodeSH.php:794
+msgid "User of repository"
+msgstr ""
+
+#: pastacodeSH.php:795
+msgid "John Doe"
+msgstr ""
+
+#: pastacodeSH.php:800
+msgid "Repository"
+msgstr ""
+
+#: pastacodeSH.php:801
+msgid "pcsh"
+msgstr ""
+
+#: pastacodeSH.php:806
+msgid "Code ID"
+msgstr ""
+
+#: pastacodeSH.php:812
+msgid "File path inside the repository"
+msgstr ""
+
+#: pastacodeSH.php:813
+msgid "bin/foobar.php"
+msgstr ""
+
+#: pastacodeSH.php:819
+msgid "File path relative to %s"
+msgstr ""
+
+#: pastacodeSH.php:827
+msgid "Revision"
+msgstr ""
+
+#: pastacodeSH.php:828
+msgid "master"
+msgstr ""
+
+#: pastacodeSH.php:833
+msgid "Code"
+msgstr ""
+
+#: pastacodeSH.php:841
+msgid "Tab size"
+msgstr ""
+
+#: pastacodeSH.php:848
+msgid "Code title"
+msgstr ""
+
+#: pastacodeSH.php:849
+msgid "title"
+msgstr ""
+
+#: pastacodeSH.php:856
+msgid "Highlited lines"
+msgstr ""

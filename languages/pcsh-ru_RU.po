@@ -1,0 +1,162 @@
+# Copyright (C) 2014 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/pcsh-pastacode-"
+"syntaxhighlighter\n"
+"POT-Creation-Date: 2014-11-20 09:31:48+00:00\n"
+"PO-Revision-Date: 2014-11-20 11:00+0100\n"
+"Last-Translator: Yury Pavlov <webaib@gmail.com>\n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: pastacodeSH.php:143
+msgid "See %s"
+msgstr "Посмотреть %s"
+
+#: pastacodeSH.php:150
+msgid "Back to %s"
+msgstr "Назад к %s"
+
+#: pastacodeSH.php:152
+msgid "view raw"
+msgstr "посмотреть исходник"
+
+#: pastacodeSH.php:415 pastacodeSH.php:493
+msgid "Settings"
+msgstr "Настройки"
+
+#: pastacodeSH.php:445
+msgid "Visit author homepage"
+msgstr "Посетить страницу автора"
+
+#: pastacodeSH.php:449
+msgid "By %s"
+msgstr "От %s"
+
+#: pastacodeSH.php:555
+msgid "General Settings"
+msgstr "Основные настройки"
+
+#: pastacodeSH.php:562
+msgid "Caching duration"
+msgstr "Обновлять кэш"
+
+#: pastacodeSH.php:568
+msgid "%s hour"
+msgstr "%s час(ов)"
+
+#: pastacodeSH.php:569
+msgid "Twice Daily"
+msgstr "Дважды в день"
+
+#: pastacodeSH.php:570
+msgid "Once Daily"
+msgstr "Ежедневно"
+
+#: pastacodeSH.php:571
+msgid "Once Weekly"
+msgstr "Раз в неделю"
+
+#: pastacodeSH.php:572
+msgid "Never reload"
+msgstr "Никогда"
+
+#: pastacodeSH.php:573
+msgid "No cache (dev mode)"
+msgstr "Отключить (для разработки)"
+
+#: pastacodeSH.php:582
+msgid "Syntax Coloration Style"
+msgstr "Цветовая схема"
+
+#: pastacodeSH.php:622
+msgid "Purge cache"
+msgstr "Очистить кэш"
+
+#: pastacodeSH.php:740
+msgid "Past'a code"
+msgstr "Вставить код"
+
+#: pastacodeSH.php:741
+msgid "Select a provider"
+msgstr "Выберите источник"
+
+#: pastacodeSH.php:742 pastacodeSH.php:872
+msgid "Select a syntax"
+msgstr "Выберите язык"
+
+#: pastacodeSH.php:751
+msgid "Manual"
+msgstr "Вручную"
+
+#: pastacodeSH.php:756
+msgid "File from uploads"
+msgstr "Загрузить файл"
+
+#: pastacodeSH.php:794
+msgid "User of repository"
+msgstr "Репозиторий пользователя"
+
+#: pastacodeSH.php:795
+msgid "John Doe"
+msgstr "Иван Иванов"
+
+#: pastacodeSH.php:800
+msgid "Repository"
+msgstr "Репозиторий"
+
+#: pastacodeSH.php:801
+msgid "pcsh"
+msgstr "pcsh"
+
+#: pastacodeSH.php:806
+msgid "Code ID"
+msgstr "Code ID"
+
+#: pastacodeSH.php:812
+msgid "File path inside the repository"
+msgstr "Путь к файлу в репозитории"
+
+#: pastacodeSH.php:813
+msgid "bin/foobar.php"
+msgstr "bin/foobar.php"
+
+#: pastacodeSH.php:819
+msgid "File path relative to %s"
+msgstr "Путь к файлу относительно %s"
+
+#: pastacodeSH.php:827
+msgid "Revision"
+msgstr "Ревизия"
+
+#: pastacodeSH.php:828
+msgid "master"
+msgstr "master"
+
+#: pastacodeSH.php:833
+msgid "Code"
+msgstr "Код"
+
+#: pastacodeSH.php:841
+msgid "Tab size"
+msgstr "Размер табуляции"
+
+#: pastacodeSH.php:848
+msgid "Code title"
+msgstr "Заголовок кода"
+
+#: pastacodeSH.php:849
+msgid "title"
+msgstr "заголовок"
+
+#: pastacodeSH.php:856
+msgid "Highlited lines"
+msgstr "Выделить строки"
