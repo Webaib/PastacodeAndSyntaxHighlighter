@@ -3,7 +3,7 @@
  * Plugin Name: PCSH
  * Plugin URI: https://github.com/Webaib/PastacodeAndSyntaxHighlighter
  * Description: Insert a code from GitHub, Gist or whatever with SyntaxHighlighter. 
- * Version: 0.1 
+ * Version: 0.3
  * Text Domain: pcsh
  * Author: Yury Pavlov, Willy Bahuaud, Julio Potier
  * Author URI: http://www.overscale.net  
@@ -12,7 +12,7 @@
 
 require_once 'SHLoader.php';
 
-const PCSH_VERSION = '0.1';
+const PCSH_VERSION = '0.3';
 
 const INIT_SH = 'initSH';
 
@@ -41,8 +41,8 @@ add_action('wp_enqueue_scripts', 'pcsh_enqueue_SyntaxHighlighterCSS');
  *  @return unknown
  */
 function pcsh_enqueue_SyntaxHighlighterCSS() {
-	wp_register_style(
-		'SyntaxHighlighterCSS',
+    wp_register_style(
+        'SyntaxHighlighterCSS',
         plugins_url(
             '/css/' . get_option('pcsh_style', 'SyntaxHighlighter') . '.css', 
             __FILE__
@@ -62,8 +62,8 @@ add_shortcode('pcsh', 'sc_pcsh');
  * @return multitype:|string
  */
 function sc_pcsh($atts, $content = "") {
-	$atts = shortcode_atts(
-	    array (
+    $atts = shortcode_atts(
+        array (
             'provider'      => '',
             'user'          => '',
             'path_id'       => '',
@@ -74,60 +74,62 @@ function sc_pcsh($atts, $content = "") {
             'message'       => '',
             'linenumbers'   => 'n',
             'showinvisible' => 'n',
-            'tab_size'       => '4',
-	    	'hl_lines'       => ''
-	  ), $atts, 'sc_pcsh'
-	);
-	
-	if (empty($atts['provider']) && ! empty($content)) {
-        $atts['provider'] = md5($content);
-	}
-	
-    $code_embed_transient = 'pcsh_' . substr(md5(serialize($atts)), 0, 14);
-	
-	$time = get_option('pcsh_cache_duration', DAY_IN_SECONDS * 7);
-	
-	if ($atts['provider'] == 'manual') {
-        $time = - 1;
-	}
+            'tab_size'      => '4',
+            'hl_lines'      => ''
+        ), 
+        $atts, 
+        'sc_pcsh'
+    );
     
-    if ($time == - 1 || ! $source = get_transient($code_embed_transient)) {
-		$source = apply_filters(
-		    'pcsh_' . $atts['provider'], array (), $atts, $content
-		);
-		
-		if (!empty($source['code'])) {
-			// Wrap lines
-			if ($lines = $atts['lines']) {
-				$lines = array_map('intval', explode('-', $lines));
-				$source['code'] = implode(
-				    "\n", 
+    if (empty($atts['provider']) && !empty($content)) {
+        $atts['provider'] = md5($content);
+    }
+    
+    $code_embed_transient = 'pcsh_' . substr(md5(serialize($atts)), 0, 14);
+    
+    $time = get_option('pcsh_cache_duration', DAY_IN_SECONDS * 7);
+    
+    if ($atts['provider'] == 'manual') {
+        $time = - 1;
+    }
+    
+    if ($time == - 1 || !$source = get_transient($code_embed_transient)) {
+        $source = apply_filters(
+            'pcsh_' . $atts['provider'], array (), $atts, $content
+        );
+        
+        if (!empty($source['code'])) {
+            // Wrap lines
+            if ($lines = $atts['lines']) {
+                $lines = array_map('intval', explode('-', $lines));
+                $source['code'] = implode(
+                    "\n", 
                     array_slice(
-				        preg_split('/\r\n|\r|\n/', $source['code']), 
-				        $lines[0]- 1, ($lines[1]- $lines[0]) + 1
+                        preg_split('/\r\n|\r|\n/', $source['code']), 
+                        $lines[0]- 1, ($lines[1]- $lines[0]) + 1
                     )
                 );
-			}
-			
-			if ($time > - 1) {
-				set_transient($code_embed_transient, $source, $time);
-			}
-		}
-	}
-	
-	if (!empty($source['code'])) {
-		// Load scripts
-		wp_enqueue_style('SyntaxHighlighterCSS');
-		// TODO highlight
-//		if (preg_match('/([0-9-,]+)/', $atts['highlight'])) {
-		
-		// Wrap
-		$output = array ();
-		$output[] = '<div class="code-embed-wrapper">';
-		
-		$brush = 'brush:' . $atts['lang'] . ';';
-		$tabSize = 'tab-size:' . $atts['tab_size'] . ';';
-		$hlLines = 'highlight:[' . $atts['hl_lines'] . '];';
+            }
+            
+            if ($time > - 1) {
+                set_transient($code_embed_transient, $source, $time);
+            }
+        }
+    }
+    
+    if (!empty($source['code'])) {
+        // Load scripts
+        wp_enqueue_style('SyntaxHighlighterCSS');
+        // TODO highlight
+        // if (preg_match('/([0-9-,]+)/', $atts['highlight'])) {
+        
+        // Wrap
+        $output = array ();
+        $output[] = '<div class="code-embed-wrapper">';
+        
+        $brush = 'brush:' . $atts['lang'] . ';';
+        $tabSize = 'tab-size:' . $atts['tab_size'] . ';';
+        $hlLines = 'highlight:[' . $atts['hl_lines'] . '];';
         
         // Wrap
         $output = array ();
@@ -136,42 +138,42 @@ function sc_pcsh($atts, $content = "") {
         $output[] = '<pre class="' . $brush . $tabSize . $hlLines . '">';
         $output[] = $source['code'];
         $output[] = '</pre>';
-		
-		$output[] = '<div align="right" class="code-embed-infos">';
+        
+        $output[] = '<div align="right" class="code-embed-infos">';
 
-		if (isset($source['url'])) {
-			$output[] = '<a href="' . esc_url($source['url']) . '" title="' 
+        if (isset($source['url'])) {
+            $output[] = '<a href="' . esc_url($source['url']) . '" title="' 
                 . sprintf(esc_attr__('See %s', 'pcsh'), $source['name']) 
                 . '" target="_blank" class="code-embed-name">' 
                 . esc_html($source['name']) . '</a>';
-		}
-		
-		if (isset($source['raw'])) {
-			$output[] = '<a href="' . esc_url($source['raw']) . '" title="' 
-			    . sprintf(esc_attr__('Back to %s'), $source['name']) 
+        }
+        
+        if (isset($source['raw'])) {
+            $output[] = '<a href="' . esc_url($source['raw']) . '" title="' 
+                . sprintf(esc_attr__('Back to %s'), $source['name']) 
                 . '" class="code-embed-raw" target="_blank">' 
                 . __('view raw', 'pcsh') . '</a>';
-		}
-		
-		if (!isset($source['url']) && !isset($source['raw']) 
+        }
+        
+        if (!isset($source['url']) && !isset($source['raw']) 
             && isset($source['name'])
-		) {
+        ) {
             $output[] = '<span class="code-embed-name">' . $source['name']
                 . '</span>';
-		}
-		
-		$output[] = '</div>';
-		$output[] = '</div>';
-		
-		callSH($atts, $output);
-		
-		$output = implode("\n", $output);
-		
-		return $output;
-	} elseif (!empty($atts['message'])) {
-		return '<span class="pcsh_message">' . esc_html($atts['message']) 
-		  . '</span>';
-	}
+        }
+        
+        $output[] = '</div>';
+        $output[] = '</div>';
+        
+        callSH($atts, $output);
+        
+        $output = implode("\n", $output);
+        
+        return $output;
+    } elseif (!empty($atts['message'])) {
+        return '<span class="pcsh_message">' . esc_html($atts['message']) 
+          . '</span>';
+    }
 }
 
 /**
@@ -834,16 +836,15 @@ function pcsh_text() {
             'label'         => __('Code', 'pcsh'), 
             'name'          => 'manual'
         ),
-   		'pcsh-tabsize' => array(
-			'classes' => array(
-   					'github', 'gist', 'bitbucket', 'pastebin', 'file',
-   					'manual'
-			),
-   				'label'         => __('Tab size', 'pcsh'),
-   				'placeholder'   => '1-20',
-   				'text'			=> '4',
-   				'name'          => 'tab_size'
-   		),
+           'pcsh-tabsize' => array(
+            'classes'       => array(
+                'github', 'gist', 'bitbucket', 'pastebin', 'file', 'manual'
+            ),
+            'label'         => __('Tab size', 'pcsh'),
+            'placeholder'   => '1-20',
+            'text'          => '4',
+            'name'          => 'tab_size'
+           ),
         'message' => array(
             'classes'       => array('manual'), 
             'label'         => __('Code title', 'pcsh'),
@@ -879,11 +880,11 @@ function pcsh_text() {
 
     foreach ($fields as $k => $f) {
         $field = array(
-            'type' => 'textbox',
-            'name' => $f['name'],
-            'label' => $f['label'],
-        	'text' => $f['text'],
-            'classes' => 'field-to-test field pcsh-args ' 
+            'type'      => 'textbox',
+            'name'      => $f['name'],
+            'label'     => $f['label'],
+            'text'      => $f['text'],
+            'classes'   => 'field-to-test field pcsh-args ' 
                 . implode(' ', $f['classes'])
         );
 
@@ -903,6 +904,6 @@ function pcsh_text() {
     // Print Vars
     $pvars = json_encode($pvars);
     echo '<script>var pcshText = ' . $text . ';var pcshVars = ' 
-		. $pvars . ';</script>';
+        . $pvars . ';</script>';
     
 }
